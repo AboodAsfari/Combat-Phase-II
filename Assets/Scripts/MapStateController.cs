@@ -45,6 +45,9 @@ public class MapStateController : MonoBehaviour{
         GameObject obj = tileDict[pos].gameObject;
         if(deleteDict) tileDict.Remove(pos);
         Destroy(obj);
+        foreach(Tile t in tileDict.Values){
+            t.UpdateVisual();
+        }
     }
 
     public void ResetMap(){
@@ -90,7 +93,12 @@ public class MapStateController : MonoBehaviour{
         mapContainer.transform.position = pos;
     }
 
-    public void SetTile(Vector2Int pos, Tile tile){ tileDict.Add(pos, tile); }
+    public void SetTile(Vector2Int pos, Tile tile){ 
+        tileDict.Add(pos, tile); 
+        foreach(Tile t in tileDict.Values){
+            t.UpdateVisual();
+        }
+    }
 
     public void SetTile(int x, int y, Tile tile){ SetTile(new Vector2Int(x, y), tile); }
 

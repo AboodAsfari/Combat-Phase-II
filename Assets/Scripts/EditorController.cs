@@ -18,11 +18,7 @@ public class EditorController : MonoBehaviour{
     private Vector2Int initMapOffset;
     private Vector2 initMousePos;
     private bool isDragging = false;
-
-    [SerializeField]
-    public Dictionary<Vector2Int, Tile> lol;
     
-
     private TileID currentTile = TileID.GRASS_TILE;
     private int tileElevation = 0;
     SpriteInfo spriteInfo;
@@ -36,7 +32,6 @@ public class EditorController : MonoBehaviour{
     }
 
     public void CreateTile(Vector2Int pos){
-        lol = gsc.tileDict;
         GameObject tile = gsc.CreateTile(pos, currentTile, tileElevation);
         gsc.SetTile(pos, tile.GetComponent<Tile>());
     }
