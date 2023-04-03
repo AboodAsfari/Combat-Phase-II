@@ -36,7 +36,19 @@ public class MapStateController : MonoBehaviour{
         tileScript.GetTileState().SetPosition(pos);
         tileScript.GetTileState().SetElevation(elevation);
         tile.name = tileScript.GetTileInfo().tileName + " at: (" + tileScript.GetTileState().GetPosition().x + ", " + tileScript.GetTileState().GetPosition().y + ")";
-        tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31);
+        tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31) 
+            + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * elevation, 0);
+        tile.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+        foreach(Transform child in tile.transform.Find("Borders & Cliffside")){
+            if(child.childCount > 0){
+                foreach(Transform cliffsideType in child.transform){
+                    if(cliffsideType.GetComponent<SpriteRenderer>().sortingOrder == 0) cliffsideType.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+                    foreach(Transform cliffsideElement in cliffsideType.transform){
+                        if(cliffsideElement.GetComponent<SpriteRenderer>().sortingOrder == 0) cliffsideElement.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+                    }
+                }
+            } else if(child.GetComponent<SpriteRenderer>().sortingOrder == 0) child.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+        }
         
         return tile;
     }
