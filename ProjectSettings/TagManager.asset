@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Tile Elevation
+    uniqueID: 2268085607
+    locked: 0

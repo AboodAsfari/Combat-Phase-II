@@ -160,7 +160,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.29411766, g: 0.68235296, b: 0.69803923, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -259,7 +259,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSelect: {fileID: 2322196927727148644, guid: 54e47941cd283b149bff9a1b70fc9612, type: 3}
   selectorGridSize: {x: 17, y: 13}
-  selectorScripts: []
   gsc: {fileID: 0}
 --- !u!4 &1421628135
 Transform:

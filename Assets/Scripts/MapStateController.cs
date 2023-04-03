@@ -36,7 +36,19 @@ public class MapStateController : MonoBehaviour{
         tileScript.GetTileState().SetPosition(pos);
         tileScript.GetTileState().SetElevation(elevation);
         tile.name = tileScript.GetTileInfo().tileName + " at: (" + tileScript.GetTileState().GetPosition().x + ", " + tileScript.GetTileState().GetPosition().y + ")";
-        tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31);
+        tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31) 
+            + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * elevation, 0);
+        tile.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+        foreach(Transform child in tile.transform.Find("Borders & Cliffside")){
+            if(child.childCount > 0){
+                foreach(Transform cliffsideType in child.transform){
+                    if(cliffsideType.GetComponent<SpriteRenderer>().sortingOrder == 0) cliffsideType.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+                    foreach(Transform cliffsideElement in cliffsideType.transform){
+                        if(cliffsideElement.GetComponent<SpriteRenderer>().sortingOrder == 0) cliffsideElement.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+                    }
+                }
+            } else if(child.GetComponent<SpriteRenderer>().sortingOrder == 0) child.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+        }
         
         return tile;
     }
@@ -45,6 +57,9 @@ public class MapStateController : MonoBehaviour{
         GameObject obj = tileDict[pos].gameObject;
         if(deleteDict) tileDict.Remove(pos);
         Destroy(obj);
+        foreach(Tile t in tileDict.Values){
+            t.UpdateVisual();
+        }
     }
 
     public void ResetMap(){
@@ -90,7 +105,12 @@ public class MapStateController : MonoBehaviour{
         mapContainer.transform.position = pos;
     }
 
-    public void SetTile(Vector2Int pos, Tile tile){ tileDict.Add(pos, tile); }
+    public void SetTile(Vector2Int pos, Tile tile){ 
+        tileDict.Add(pos, tile); 
+        foreach(Tile t in tileDict.Values){
+            t.UpdateVisual();
+        }
+    }
 
     public void SetTile(int x, int y, Tile tile){ SetTile(new Vector2Int(x, y), tile); }
 
