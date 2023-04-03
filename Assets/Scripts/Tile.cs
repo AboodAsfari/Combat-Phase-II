@@ -47,75 +47,59 @@ public abstract class Tile : MonoBehaviour{
         GameObject borderCornerBottomRight = borderContainer.Find("Bottom Right Corner Border").gameObject;
         GameObject borderCornerBottomLeft = borderContainer.Find("Bottom Left Corner Border").gameObject;
 
-        cliffsideRight.SetActive(ShowEdge(0, 1));
-        cliffsideLeft.SetActive(ShowEdge(-1, 1));
+        cliffsideRight.SetActive(ShowEdge(Direction.BOTTOM_RIGHT));
+        cliffsideLeft.SetActive(ShowEdge(Direction.BOTTOM_LEFT));
 
-        if(cliffsideRight.activeSelf){
-            int rightLayers;
-            if(GetAdjacent(0, 1) == null) rightLayers = tileState.GetElevation() + 2;
-            else rightLayers = tileState.GetElevation() - GetElevation(0, 1);
+        SetCliffsideLayers(cliffsideRight, borderCornerBottomRight, Direction.BOTTOM_RIGHT);
+        SetCliffsideLayers(cliffsideLeft, borderCornerBottomLeft, Direction.BOTTOM_LEFT);
 
-            foreach(Transform child in cliffsideRight.transform){
-                child.gameObject.SetActive(false);
-            }
-            cliffsideRight.transform.GetChild(rightLayers - 1).gameObject.SetActive(true);
+        borderRight.SetActive(ShowEdge(Direction.RIGHT));
+        borderLeft.SetActive(ShowEdge(Direction.LEFT));
+        borderTopLeft.SetActive(ShowEdge(Direction.TOP_LEFT));
+        borderTopRight.SetActive(ShowEdge(Direction.TOP_RIGHT));
+        borderCornerTopLeft.SetActive(ShowEdge(Direction.LEFT) && (ShowEdge(Direction.TOP_LEFT) || ShowEdgeLower(Direction.TOP_LEFT)));
+        borderCornerTopRight.SetActive(ShowEdge(Direction.RIGHT) && (ShowEdge(Direction.TOP_RIGHT) || ShowEdgeLower(Direction.TOP_RIGHT)));
+        borderCornerBottomLeft.SetActive(ShowEdge(Direction.LEFT) && ShowEdge(Direction.BOTTOM_LEFT));
+        borderCornerBottomRight.SetActive(ShowEdge(Direction.RIGHT) && ShowEdge(Direction.BOTTOM_RIGHT));
 
-            Transform cornerBorder = borderCornerBottomRight.transform;
-            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.scaleY * rightLayers, 1);
-            cornerBorder.localPosition = new Vector3(cornerBorder.localPosition.x, cliffsideSpriteInfo.initY 
-                - (cliffsideSpriteInfo.height * (rightLayers - 1) * 0.5f), cornerBorder.localPosition.z); 
+        borderCornerTopLeft.transform.Find("Pixel Fill").gameObject.SetActive(GetAdjacent(Direction.TOP_LEFT) == null || !ShowEdgeLower(Direction.TOP_LEFT));
+        borderCornerTopRight.transform.Find("Pixel Fill").gameObject.SetActive(GetAdjacent(Direction.TOP_RIGHT) == null || !ShowEdgeLower(Direction.TOP_RIGHT));
+
+        AdjustSideBorder(borderRight, Direction.TOP_RIGHT, Direction.RIGHT, Direction.BOTTOM_RIGHT);
+        AdjustSideBorder(borderLeft, Direction.TOP_LEFT, Direction.LEFT, Direction.BOTTOM_LEFT);
+
+        void AdjustSideBorder(GameObject border, Direction topDir, Direction sideDir, Direction bottomDir){
+            int extraTopLayers = 0;
+            int diffBottomLayers = 0;
+            if(GetAdjacent(topDir) != null && GetElevation(topDir) == tileState.GetElevation()) extraTopLayers = tileState.GetElevation() + 1;
+            if(GetAdjacent(sideDir) != null && GetElevation(sideDir) < tileState.GetElevation() && extraTopLayers != 0) extraTopLayers -= GetElevation(sideDir) + 2;
+            if(GetAdjacent(bottomDir) != null && GetElevation(bottomDir) > tileState.GetElevation()) diffBottomLayers = GetElevation(bottomDir) - tileState.GetElevation();
+            border.transform.localScale = new Vector3(1, sideBorderSpriteInfo.scaleY - ((extraTopLayers + diffBottomLayers) * sideBorderSpriteInfo.height), 1);
+            border.transform.localPosition = new Vector3(border.transform.localPosition.x, sideBorderSpriteInfo.initY 
+                - (extraTopLayers * sideBorderSpriteInfo.height * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.height * 0.5f), border.transform.localPosition.z);
         }
 
-        // TODO  
+        void SetCliffsideLayers(GameObject cliffside, GameObject bottomCorner, Direction bottomDir){
+            if(!cliffside.activeSelf) return;
+            int layers;
+            if(GetAdjacent(bottomDir) == null) layers = tileState.GetElevation() + 2;
+            else layers = tileState.GetElevation() - GetElevation(bottomDir);
 
-        if(cliffsideLeft.activeSelf){
-            int leftLayers;
-            if(GetAdjacent(-1, 1) == null) leftLayers = tileState.GetElevation() + 2;
-            else leftLayers = tileState.GetElevation() - GetElevation(-1, 1);
-
-            foreach(Transform child in cliffsideLeft.transform){
+            foreach(Transform child in cliffside.transform){
                 child.gameObject.SetActive(false);
             }
-            cliffsideLeft.transform.GetChild(leftLayers - 1).gameObject.SetActive(true);
+            cliffside.transform.GetChild(layers - 1).gameObject.SetActive(true);
 
-            Transform cornerBorder = borderCornerBottomLeft.transform;
-            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.scaleY * leftLayers, 1);
+            Transform cornerBorder = bottomCorner.transform;
+            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.scaleY * layers, 1);
             cornerBorder.localPosition = new Vector3(cornerBorder.localPosition.x, cliffsideSpriteInfo.initY 
-                - (cliffsideSpriteInfo.height * (leftLayers - 1) * 0.5f), cornerBorder.localPosition.z); 
+                - (cliffsideSpriteInfo.height * (layers - 1) * 0.5f), cornerBorder.localPosition.z); 
         }
 
-        borderRight.SetActive(ShowEdge(1, 0));
-        borderLeft.SetActive(ShowEdge(-1, 0));
-        borderTopLeft.SetActive(ShowEdge(0, -1));
-        borderTopRight.SetActive(ShowEdge(1, -1));
-        borderCornerTopLeft.SetActive(ShowEdge(-1, 0) && (ShowEdge(0, -1) || ShowEdgeLower(0, -1)));
-        borderCornerTopRight.SetActive(ShowEdge(1, 0) && (ShowEdge(1, -1) || ShowEdgeLower(1, -1)));
-        borderCornerBottomLeft.SetActive(ShowEdge(-1, 0) && ShowEdge(-1, 1));
-        borderCornerBottomRight.SetActive(ShowEdge(1, 0) && ShowEdge(0, 1));
-
-        borderCornerTopLeft.transform.Find("Pixel Fill").gameObject.SetActive(GetAdjacent(0, -1) == null || !ShowEdgeLower(0, -1));
-        borderCornerTopRight.transform.Find("Pixel Fill").gameObject.SetActive(GetAdjacent(1, -1) == null || !ShowEdgeLower(1, -1));
-
-        int extraTopLayers = 0;
-        int diffBottomLayers = 0;
-        if(GetAdjacent(1, -1) != null && GetElevation(1, -1) == tileState.GetElevation()) extraTopLayers = tileState.GetElevation() + 1;
-        if(GetAdjacent(1, 0) != null && GetElevation(1, 0) < tileState.GetElevation()) extraTopLayers -= GetElevation(1, 0) + 2;
-        if(GetAdjacent(0, 1) != null && GetElevation(0, 1) > tileState.GetElevation()) diffBottomLayers = GetElevation(0, 1) - tileState.GetElevation();
-        borderRight.transform.localScale = new Vector3(1, sideBorderSpriteInfo.scaleY - ((extraTopLayers + diffBottomLayers) * sideBorderSpriteInfo.height), 1);
-        borderRight.transform.localPosition = new Vector3(borderRight.transform.localPosition.x, sideBorderSpriteInfo.initY 
-            - (extraTopLayers * sideBorderSpriteInfo.height * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.height * 0.5f), borderRight.transform.localPosition.z);
-
-        // offsetTiles = 0;
-        // if(GetAdjacent(0, -1) != null && GetElevation(0, -1) == tileState.GetElevation()) offsetTiles = tileState.GetElevation() + 1;
-        // else if(GetAdjacent(1, 1) != null && GetElevation(1, 1) > tileState.GetElevation()) offsetTiles = (tileState.GetElevation() - GetElevation(1, 1)) * 0.5f;
-        // if(offsetTiles < 0) borderLeft.transform.localScale = new Vector3(1, sideBorderSpriteInfo.scaleY + (offsetTiles * sideBorderSpriteInfo.height * 2), 1);
-        // borderLeft.transform.localPosition = new Vector3(borderLeft.transform.localPosition.x, sideBorderSpriteInfo.initY 
-        //     - (offsetTiles * sideBorderSpriteInfo.height), borderLeft.transform.localPosition.z);
-
-        Tile GetAdjacent(int x, int y){ return gsc.GetTile(tileState.GetPosition() + new Vector2Int(x, y)); }
-        int GetElevation(int x, int y){ return GetAdjacent(x, y).GetTileState().GetElevation(); }
-        bool ShowEdge(int x, int y){ return GetAdjacent(x, y) == null || GetElevation(x, y) < tileState.GetElevation(); }
-        bool ShowEdgeLower(int x, int y){ return GetAdjacent(x, y) == null || GetElevation(x, y) > tileState.GetElevation(); }
+        Tile GetAdjacent(Direction dir){ return gsc.GetTile(tileState.GetPosition() + new Vector2Int(dir.GetVector().x, dir.GetVector().y)); }
+        int GetElevation(Direction dir){ return GetAdjacent(dir).GetTileState().GetElevation(); }
+        bool ShowEdge(Direction dir){ return GetAdjacent(dir) == null || GetElevation(dir) < tileState.GetElevation(); }
+        bool ShowEdgeLower(Direction dir){ return GetAdjacent(dir) == null || GetElevation(dir) > tileState.GetElevation(); }
     }
 
     public virtual TileID GetID(){ 
@@ -140,3 +124,25 @@ public static class TileExtensions{
     }
 }
 
+public enum Direction{
+    TOP_RIGHT,
+    TOP_LEFT,
+    RIGHT,
+    LEFT,
+    BOTTOM_RIGHT,
+    BOTTOM_LEFT
+}
+
+public static class DirectionExtensions{
+    public static Vector2Int GetVector(this Direction type){
+        switch(type){
+            case Direction.TOP_RIGHT : return new Vector2Int(1, -1);
+            case Direction.TOP_LEFT : return new Vector2Int(0, -1);
+            case Direction.RIGHT : return new Vector2Int(1, 0);
+            case Direction.LEFT : return new Vector2Int(-1, 0);
+            case Direction.BOTTOM_RIGHT : return new Vector2Int(0, 1);
+            case Direction.BOTTOM_LEFT : return new Vector2Int(-1, 1);
+        }
+        return Vector2Int.zero;
+    }
+}
