@@ -39,6 +39,7 @@ public class MapStateController : MonoBehaviour{
         tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31) 
             + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * elevation, 0);
         tile.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+        tile.transform.Find("Tile Hover").GetComponent<SpriteRenderer>().sortingOrder = elevation;
         foreach(Transform child in tile.transform.Find("Borders & Cliffside")){
             if(child.childCount > 0){
                 foreach(Transform cliffsideType in child.transform){

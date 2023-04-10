@@ -28,6 +28,18 @@ public abstract class Tile : MonoBehaviour{
         }
     }
 
+    public void OnMouseDown(){
+        Debug.Log("Clicked on tile at: " + tileState.GetPosition());
+    }
+
+    public void OnMouseEnter(){
+        transform.Find("Tile Hover").gameObject.SetActive(true);
+    }
+
+    public void OnMouseExit(){
+        transform.Find("Tile Hover").gameObject.SetActive(false);
+    }
+
     public void SetEditing(bool editing){ this.editing = editing; }
 
     public TileInfo GetTileInfo(){ return tileInfo; }

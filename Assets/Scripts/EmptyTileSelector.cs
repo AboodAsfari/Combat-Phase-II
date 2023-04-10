@@ -21,6 +21,14 @@ public class EmptyTileSelector : MonoBehaviour{
         }
     }
 
+    public void OnMouseEnter(){
+        transform.Find("Tile Hover").gameObject.SetActive(true);
+    }
+
+    public void OnMouseExit(){
+        transform.Find("Tile Hover").gameObject.SetActive(false);
+    }
+
     private void Update(){
         Vector2Int posFix = (new Vector2Int((int) -Math.Ceiling(pos.y / 2f), 0) + Vector2Int.Scale(editorController.GetMapOffset(), new Vector2Int(-1, 1)))
             - new Vector2Int((int) Math.Floor(editorController.GetMapOffset().y / 2f), 0);

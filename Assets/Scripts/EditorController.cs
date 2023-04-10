@@ -49,7 +49,6 @@ public class EditorController : MonoBehaviour{
                 Vector3 oldPos = selector.transform.position;
                 selector.transform.position = new Vector3(oldPos.x, oldPos.y, 0f);
                 selector.GetComponent<EmptyTileSelector>().SetPosition(new Vector2Int(col, row));
-                selector.AddComponent<BoxCollider2D>().size = new Vector2(spriteInfo.width, spriteInfo.height);
                 selector.name = "Empty Tile Selector at: (" + col + ", " + row + ")";
                 selectorScripts.Add(selector.GetComponent<EmptyTileSelector>());
             }
@@ -72,19 +71,19 @@ public class EditorController : MonoBehaviour{
         }else isDragging = false;
 
         if(Input.GetKeyDown("1")){
-            Debug.Log("Set elevation to: -1");
+            Debug.Log("Setting elevation to: -1");
             tileElevation = -1;
         }else if(Input.GetKeyDown("2")){
-            Debug.Log("Set elevation to: 0");
+            Debug.Log("Setting elevation to: 0");
             tileElevation = 0;
         }else if(Input.GetKeyDown("3")){
-            Debug.Log("Set elevation to: 1");
+            Debug.Log("Setting elevation to: 1");
             tileElevation = 1;
         }else if(Input.GetKeyDown("s")){
-            Debug.Log("Saving current edit");
+            Debug.Log("Saving current edit...");
             gsc.SaveFile();
         }else if(Input.GetKeyDown("l")){
-            Debug.Log("Loading save file");
+            Debug.Log("Loading save file...");
             gsc.LoadFile();
         }
     }
