@@ -1,52 +1,71 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
+// Base class for all tiles.
 public abstract class Tile : MonoBehaviour{
+    // Information about the tile.
     protected TileInfo tileInfo;
     protected TileState tileState;
+
+    // Information about the tile sprites.
     protected SpriteInfo cliffsideSpriteInfo;
     protected SpriteInfo sideBorderSpriteInfo;
 
+    // Tracks whether the map editor is currently open.
     private bool editing = false;
-    private MapStateController gsc;
 
+    // The object that controls the current map, whether it's an editor or game.
+    private MapStateController msc;
+
+    // Loads map state controller, as well as tile information
+    // and tile sprite info.
     protected void Awake(){
+        if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
+        else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
+
         tileInfo = Resources.Load("TileInfo/" + ObjectNames.GetClassName(this) + "Info") as TileInfo;
         tileState = ScriptableObject.CreateInstance<TileState>();
-        if(GameObject.Find("Editor Controller") != null) gsc = GameObject.Find("Editor Controller").GetComponent<EditorController>().gsc;
-        else gsc = GameObject.Find("Game Controller").GetComponent<GameController>().gsc;
 
         cliffsideSpriteInfo = Resources.Load("SpriteInfo/CliffsideSpriteInfo") as SpriteInfo;
         sideBorderSpriteInfo = Resources.Load("SpriteInfo/SideBorderSpriteInfo") as SpriteInfo;
     }
 
+    // Deletes a tile if the editor is open and the right mouse button 
+    // is pressed over the tile.
     public void OnMouseOver(){
-        if(Input.GetMouseButton(1) && editing && gsc.GetTile(tileState.GetPosition()) != null){
-            gsc.DeleteTile(tileState.GetPosition());
+        if(Input.GetMouseButton(1) && editing && msc.GetTile(tileState.GetPosition()) != null){
+            msc.DeleteTile(tileState.GetPosition());
         }
     }
-
+    
+    // TODO: Call OnClick() hooks for map entities. 
     public void OnMouseDown(){
         Debug.Log("Clicked on tile at: " + tileState.GetPosition());
     }
 
+    // Turns on the hover visual for a tile when the mouse is over it.
     public void OnMouseEnter(){
         transform.Find("Tile Hover").gameObject.SetActive(true);
     }
 
+    // Turns off the hover visual for a tile when the mouse 
+    // is no longer over it.
     public void OnMouseExit(){
         transform.Find("Tile Hover").gameObject.SetActive(false);
     }
 
+    // Setters.
     public void SetEditing(bool editing){ this.editing = editing; }
 
+    // Getters.
     public TileInfo GetTileInfo(){ return tileInfo; }
-
     public TileState GetTileState(){ return tileState; }
 
+    // Updates the visual of the tile based on surrounding
+    // tiles, this affects border and cliffside height.
     public void UpdateVisual(){
+        // Gets all relevant border game objects.
         Transform borderContainer = transform.Find("Borders & Cliffside");
         GameObject cliffsideRight = borderContainer.Find("Right Cliffside").gameObject;
         GameObject cliffsideLeft = borderContainer.Find("Left Cliffside").gameObject;
@@ -59,6 +78,8 @@ public abstract class Tile : MonoBehaviour{
         GameObject borderCornerBottomRight = borderContainer.Find("Bottom Right Corner Border").gameObject;
         GameObject borderCornerBottomLeft = borderContainer.Find("Bottom Left Corner Border").gameObject;
 
+        // Sets all border based on the status of the relevant
+        // adjacent tiles.
         cliffsideRight.SetActive(ShowEdge(Direction.BOTTOM_RIGHT));
         cliffsideLeft.SetActive(ShowEdge(Direction.BOTTOM_LEFT));
 
@@ -80,6 +101,8 @@ public abstract class Tile : MonoBehaviour{
         AdjustSideBorder(borderRight, Direction.TOP_RIGHT, Direction.RIGHT, Direction.BOTTOM_RIGHT);
         AdjustSideBorder(borderLeft, Direction.TOP_LEFT, Direction.LEFT, Direction.BOTTOM_LEFT);
 
+        // Changes the height and positon of the side border based on 
+        // the tile above it, below it, and next to it.
         void AdjustSideBorder(GameObject border, Direction topDir, Direction sideDir, Direction bottomDir){
             int extraTopLayers = 0;
             int diffBottomLayers = 0;
@@ -91,6 +114,7 @@ public abstract class Tile : MonoBehaviour{
                 - (extraTopLayers * sideBorderSpriteInfo.height * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.height * 0.5f), border.transform.localPosition.z);
         }
 
+        // Sets the height and position of a cliffside.
         void SetCliffsideLayers(GameObject cliffside, GameObject bottomCorner, Direction bottomDir){
             if(!cliffside.activeSelf) return;
             int layers;
@@ -108,12 +132,15 @@ public abstract class Tile : MonoBehaviour{
                 - (cliffsideSpriteInfo.height * (layers - 1) * 0.5f), cornerBorder.localPosition.z); 
         }
 
-        Tile GetAdjacent(Direction dir){ return gsc.GetTile(tileState.GetPosition() + new Vector2Int(dir.GetVector().x, dir.GetVector().y)); }
+        // Helper methods that get adjacent tiles and check them 
+        // against certain conditions.
+        Tile GetAdjacent(Direction dir){ return msc.GetTile(tileState.GetPosition() + new Vector2Int(dir.GetVector().x, dir.GetVector().y)); }
         int GetElevation(Direction dir){ return GetAdjacent(dir).GetTileState().GetElevation(); }
         bool ShowEdge(Direction dir){ return GetAdjacent(dir) == null || GetElevation(dir) < tileState.GetElevation(); }
         bool ShowEdgeLower(Direction dir){ return GetAdjacent(dir) == null || GetElevation(dir) > tileState.GetElevation(); }
     }
 
+    // Gets the ID of the current tile.
     public virtual TileID GetID(){ 
         foreach(TileID id in Enum.GetValues(typeof(TileID))){
             if(id.GetPrefabName() == ObjectNames.GetClassName(this)) return id;
@@ -122,11 +149,13 @@ public abstract class Tile : MonoBehaviour{
     }
 }
 
+// All possible tile IDs.
 public enum TileID{
     GRASS_TILE,
     NULL_VALUE
 }
 
+// Used to find the correct prefab based on the tile ID.
 public static class TileExtensions{
     public static String GetPrefabName(this TileID type){
         switch(type){
@@ -136,6 +165,7 @@ public static class TileExtensions{
     }
 }
 
+// Directions that one can go from a tile.
 public enum Direction{
     TOP_RIGHT,
     TOP_LEFT,
@@ -145,6 +175,7 @@ public enum Direction{
     BOTTOM_LEFT
 }
 
+// Converts a direction enum value to a direction vector.
 public static class DirectionExtensions{
     public static Vector2Int GetVector(this Direction type){
         switch(type){

@@ -1,15 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the main game where players will fight.
 public class GameController : MonoBehaviour{
     [HideInInspector]
-    public MapStateController gsc;
+    // The map state controller which is in charge
+    // of any map-relation function such as saving, loading,
+    // and interacting with map entities.
+    public MapStateController msc;
 
-    public float driftFactor = 0.1f;
-    public float driftFadeFactor = 0.5f;
-    private Vector2 mapOffset = Vector2Int.zero;
+    // Map drift related fields.
+    [SerializeField]
+    private float driftFactor = 0.1f;
+    [SerializeField]
+    private float driftFadeFactor = 0.5f;
     private Vector2 mapDrift = Vector2.zero;
+
+    // Fields related to moving the map.
+    private Vector2 mapOffset = Vector2Int.zero; 
     private Vector2 initMapOffset;
     private Vector2 initMousePos;
     private Vector2 prevMousePos;
@@ -18,16 +25,20 @@ public class GameController : MonoBehaviour{
     private bool camSnapOn = false;
     private bool camDriftOn = true;
 
+    // Information about the tile sprite.
     SpriteInfo spriteInfo;
     
+    // Creates a new map state controller and loads the tile sprite info.
     void Start(){
-        gsc = gameObject.AddComponent<MapStateController>();
-        gsc.LoadFile();
+        msc = gameObject.AddComponent<MapStateController>();
+        msc.LoadFile();
 
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
     }
 
+    // Allows map movement, and toggling camera options.
     private void Update(){
+        // Moves the map and adds map drift when drag is over.
         if(Input.GetMouseButton(2)){
             if(!isDragging){
                 isDragging = true;
@@ -40,7 +51,7 @@ public class GameController : MonoBehaviour{
             Vector2 posChange = camSnapOn ? Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.width, 1/spriteInfo.height))) : mouseDiff;
             prevMousePos = mousePos;
             mapOffset = initMapOffset + posChange;
-            gsc.SetMapPosition(mapOffset);
+            msc.SetMapPosition(mapOffset);
         }else if(isDragging){
             isDragging = false;
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -48,13 +59,16 @@ public class GameController : MonoBehaviour{
             driftInterpolate = 0f;
         }
 
+        // Drifts the map.
         if(!mapDrift.Equals(Vector2.zero) && camDriftOn && !camSnapOn){
             mapOffset += mapDrift;
-            gsc.SetMapPosition(mapOffset);
+            msc.SetMapPosition(mapOffset);
             mapDrift = Vector2.Lerp(mapDrift, Vector2.zero, driftInterpolate);
             driftInterpolate += driftFadeFactor * Time.deltaTime;
         }
 
+        // TODO: Remove these by adding user friendly functionality or putting them in a proper dev tool.
+        // Toggles camera snap and camera drift.
         if(Input.GetKeyDown("c")){
             Debug.Log("Turning camera snap " + (camSnapOn ? "on" : "off"));
             camSnapOn = !camSnapOn;

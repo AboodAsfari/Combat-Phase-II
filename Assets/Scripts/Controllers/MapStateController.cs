@@ -4,18 +4,26 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
-public class MapStateController : MonoBehaviour{
-    
+// The main game class which will control the map state. 
+// This means every entity will be accessed through here.
+public class MapStateController : MonoBehaviour{    
+    // The tile map.
     public Dictionary<Vector2Int, Tile> tileDict = new Dictionary<Vector2Int, Tile>();
+    
+    // Information used to place tiles in the correct world position.
     private Vector3 topLeft;
     SpriteInfo spriteInfo;
-    
+
+    // Stores map entities: tiles.
     private GameObject mapContainer;
     private GameObject tileContainer;
     
+    // Fields related to loading map info.
     private string destination;
 	private BinaryFormatter bf = new BinaryFormatter();
 
+    // Loads position related info (top left position and tile sprite info), 
+    // initializes map containers, and declares save file location.
     public void Awake(){
         topLeft = Vector3.Scale(Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, Camera.main.nearClipPlane)), new Vector3(1, 1, 0));
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
@@ -28,16 +36,22 @@ public class MapStateController : MonoBehaviour{
         destination = Application.persistentDataPath + "/examplemap.dat";
     }
 
+    // Creates and returns a new tile using a position, ID, and tile elevation.
     public GameObject CreateTile(Vector2Int pos, TileID tileID, int elevation = 0){
+        // Creates the tile object (in editing mode, if the editor is open).
         GameObject prefab = Resources.Load("Tiles/" + tileID.GetPrefabName()) as GameObject;
         GameObject tile = Instantiate(prefab, topLeft, Quaternion.identity, tileContainer.transform);
         Tile tileScript = tile.GetComponent<Tile>();
         if(GameObject.Find("Editor Controller") != null) tile.GetComponent<Tile>().SetEditing(true);
+
+        // Sets tile properties and position.
         tileScript.GetTileState().SetPosition(pos);
         tileScript.GetTileState().SetElevation(elevation);
         tile.name = tileScript.GetTileInfo().tileName + " at: (" + tileScript.GetTileState().GetPosition().x + ", " + tileScript.GetTileState().GetPosition().y + ")";
         tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31) 
             + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * elevation, 0);
+
+        // Sets the sorting order of the tile and its children.
         tile.GetComponent<SpriteRenderer>().sortingOrder = elevation;
         tile.transform.Find("Tile Hover").GetComponent<SpriteRenderer>().sortingOrder = elevation;
         foreach(Transform child in tile.transform.Find("Borders & Cliffside")){
@@ -54,6 +68,7 @@ public class MapStateController : MonoBehaviour{
         return tile;
     }
 
+    // Removes a tile from the tile map.
     public void DeleteTile(Vector2Int pos, bool deleteDict = true){
         GameObject obj = tileDict[pos].gameObject;
         if(deleteDict) tileDict.Remove(pos);
@@ -63,6 +78,7 @@ public class MapStateController : MonoBehaviour{
         }
     }
 
+    // Resets the tile map.
     public void ResetMap(){
         foreach(Vector2Int pos in tileDict.Keys){
             DeleteTile(pos, false);
@@ -70,6 +86,7 @@ public class MapStateController : MonoBehaviour{
         tileDict.Clear();
     }
 
+    // Saves the current tile map.
     public void SaveFile(){
         FileStream file;
         if(File.Exists(destination)) file = File.OpenWrite(destination);
@@ -80,6 +97,7 @@ public class MapStateController : MonoBehaviour{
         file.Close();
     }
 
+    // Loads a map from a save file.
     public void LoadFile(){
         FileStream file;
         if(File.Exists(destination)) file = File.OpenRead(destination);
@@ -101,6 +119,7 @@ public class MapStateController : MonoBehaviour{
         }
     }
 
+    // Setters.
     public void SetMapPosition(Vector2 point){
         Vector2 pos = Vector2.Scale(point , new Vector2(spriteInfo.width, spriteInfo.height - SpriteInfo.TILE_VERTICAL_OFFSET));
         mapContainer.transform.position = pos;
@@ -112,17 +131,14 @@ public class MapStateController : MonoBehaviour{
             t.UpdateVisual();
         }
     }
-
     public void SetTile(int x, int y, Tile tile){ SetTile(new Vector2Int(x, y), tile); }
 
+    // Getters.
     public Tile GetTile(Vector2Int pos){
         if(tileDict.ContainsKey(pos)) return tileDict[pos];
         return null;
     }
-
     public Tile GetTile(int x, int y){ return GetTile(new Vector2Int(x, y)); }
-
-    public Vector3 GetTopLeft(){ return topLeft; }
 
     private Vector3 GetScreenPos(Vector2Int pos){
         SpriteInfo spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
@@ -130,9 +146,12 @@ public class MapStateController : MonoBehaviour{
         float yPosOffset = -(spriteInfo.height - SpriteInfo.TILE_VERTICAL_OFFSET) * pos.y;
         return new Vector3(xPosOffset, yPosOffset, 30);
     }
+
+    public Vector3 GetTopLeft(){ return topLeft; }
 }
 
 [System.Serializable]
+// Takes current map data and stores it in a serializable object.
 public class GameData{
 	public Dictionary<Tuple<int, int>, Tuple<TileID, String>> savedTiledDict;
 
