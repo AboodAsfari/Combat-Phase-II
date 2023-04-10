@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour{
     SpriteInfo spriteInfo;
     
     // Creates a new map state controller and loads the tile sprite info.
-    void Start(){
+    private void Start(){
         msc = gameObject.AddComponent<MapStateController>();
         msc.LoadFile();
 

@@ -27,7 +27,7 @@ public class MapStateController : MonoBehaviour{
 
     // Loads position related info (top left position and tile sprite info), 
     // initializes map containers, and declares save file location.
-    public void Awake(){
+    private void Awake(){
         topLeft = Vector3.Scale(Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, Camera.main.nearClipPlane)), new Vector3(1, 1, 0));
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
 
@@ -91,7 +91,6 @@ public class MapStateController : MonoBehaviour{
         if(GetTile(pos) == null) return null;
 
         // Creates the unit object.
-        Debug.Log(unitID.GetPrefabName());
         GameObject prefab = Resources.Load("Units/" + unitID.GetPrefabName()) as GameObject;
         GameObject unit = Instantiate(prefab, topLeft, Quaternion.identity, unitContainer.transform);
         Unit unitScript = unit.GetComponent<Unit>();

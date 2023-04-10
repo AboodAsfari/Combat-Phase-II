@@ -13,7 +13,6 @@ public abstract class Unit : MonoBehaviour{
 
     // Loads map state controller, as well as unit information.
     protected void Awake(){
-        Debug.Log(this.GetType().ToString() + "Info");
         if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
         else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
 

@@ -33,25 +33,25 @@ public abstract class Tile : MonoBehaviour{
 
     // Deletes a tile if the editor is open and the right mouse button 
     // is pressed over the tile.
-    public void OnMouseOver(){
+    private void OnMouseOver(){
         if(Input.GetMouseButton(1) && editing && msc.GetTile(tileState.GetPosition()) != null){
             msc.DeleteTile(tileState.GetPosition());
         }
     }
     
     // TODO: Call OnClick() hooks for map entities. 
-    public void OnMouseDown(){
+    private void OnMouseDown(){
         Debug.Log("Clicked on tile at: " + tileState.GetPosition());
     }
 
     // Turns on the hover visual for a tile when the mouse is over it.
-    public void OnMouseEnter(){
+    private void OnMouseEnter(){
         transform.Find("Tile Hover").gameObject.SetActive(true);
     }
 
     // Turns off the hover visual for a tile when the mouse 
     // is no longer over it.
-    public void OnMouseExit(){
+    private void OnMouseExit(){
         transform.Find("Tile Hover").gameObject.SetActive(false);
     }
 
