@@ -34,6 +34,8 @@ public class GameController : MonoBehaviour{
         msc.LoadFile();
 
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
+
+        msc.SetUnit(new Vector2Int(5, 5), msc.CreateUnit(new Vector2Int(5, 5), UnitID.TST_UNIT).GetComponent<Unit>());
     }
 
     // Allows map movement, and toggling camera options.

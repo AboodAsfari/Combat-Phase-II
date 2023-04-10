@@ -24,7 +24,7 @@ public abstract class Tile : MonoBehaviour{
         if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
         else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
 
-        tileInfo = Resources.Load("TileInfo/" + ObjectNames.GetClassName(this) + "Info") as TileInfo;
+        tileInfo = Resources.Load("TileInfo/" + this.GetType().ToString() + "Info") as TileInfo;
         tileState = ScriptableObject.CreateInstance<TileState>();
 
         cliffsideSpriteInfo = Resources.Load("SpriteInfo/CliffsideSpriteInfo") as SpriteInfo;
