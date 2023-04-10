@@ -27,15 +27,21 @@ public class GameController : MonoBehaviour{
 
     // Information about the tile sprite.
     SpriteInfo spriteInfo;
+
+    PlayerController playerOne;
+    PlayerController playerTwo;
     
     // Creates a new map state controller and loads the tile sprite info.
     private void Start(){
         msc = gameObject.AddComponent<MapStateController>();
         msc.LoadFile();
 
+        playerOne = gameObject.AddComponent<PlayerController>();
+        playerTwo = gameObject.AddComponent<PlayerController>();
+
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
 
-        msc.SetUnit(new Vector2Int(5, 5), msc.CreateUnit(new Vector2Int(5, 5), UnitID.TST_UNIT).GetComponent<Unit>());
+        msc.SetUnit(new Vector2Int(5, 5), msc.CreateUnit(new Vector2Int(5, 5), UnitID.TST_UNIT, playerOne).GetComponent<Unit>());
     }
 
     // Allows map movement, and toggling camera options.

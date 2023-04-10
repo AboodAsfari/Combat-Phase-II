@@ -41,6 +41,8 @@ public abstract class Tile : MonoBehaviour{
     
     // TODO: Call OnClick() hooks for map entities. 
     private void OnMouseDown(){
+        if(editing) return;
+        msc.selectedEntity.SetSelect(GetComponent<Tile>());
         Debug.Log("Clicked on tile at: " + tileState.GetPosition());
     }
 

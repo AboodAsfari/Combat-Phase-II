@@ -9,7 +9,9 @@ using UnityEngine.Rendering;
 // This means every entity will be accessed through here.
 public class MapStateController : MonoBehaviour{    
     // The two entity maps.
+    [HideInInspector]
     public Dictionary<Vector2Int, Tile> tileDict = new Dictionary<Vector2Int, Tile>();
+    [HideInInspector]
     public Dictionary<Vector2Int, Unit> unitDict = new Dictionary<Vector2Int, Unit>();
     
     // Information used to place tiles in the correct world position.
@@ -20,6 +22,10 @@ public class MapStateController : MonoBehaviour{
     private GameObject mapContainer;
     private GameObject tileContainer;
     private GameObject unitContainer;
+
+    [HideInInspector]
+    // Tracks the currently selected entity.
+    public EntitySelect selectedEntity = new EntitySelect();
     
     // Fields related to loading map info.
     private string destination;
@@ -86,8 +92,8 @@ public class MapStateController : MonoBehaviour{
         }
     }
 
-    // Creates and returns a new unit using a position, and ID.
-    public GameObject CreateUnit(Vector2Int pos, UnitID unitID){
+    // Creates and returns a new unit using a position, ID, and player owner.
+    public GameObject CreateUnit(Vector2Int pos, UnitID unitID, PlayerController owner){
         if(GetTile(pos) == null) return null;
 
         // Creates the unit object.
@@ -97,6 +103,7 @@ public class MapStateController : MonoBehaviour{
 
         // Sets tile properties and position.
         unitScript.GetUnitState().SetPosition(pos);
+        unitScript.GetUnitState().SetOwner(owner);
         unit.name = unitScript.GetUnitInfo().unitName + " at: (" + unitScript.GetUnitState().GetPosition().x + ", " + unitScript.GetUnitState().GetPosition().y + ")";
         unit.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31)
             + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * GetTile(pos).GetTileState().GetElevation(), 0);
@@ -191,6 +198,29 @@ public class MapStateController : MonoBehaviour{
     }
 
     public Vector3 GetTopLeft(){ return topLeft; }
+}
+
+public class EntitySelect{
+    private Tile tile;
+    private Unit unit;
+
+    public void ResetSelect(){
+        tile = null;
+        unit = null;
+    }
+
+    public void SetSelect(Tile tile){
+        ResetSelect();
+        this.tile = tile;
+    }
+
+    public void SetSelect(Unit unit){
+        ResetSelect();
+        this.unit = unit;
+    }
+
+    #nullable enable
+    public (Tile? tile, Unit? unit) GetSelect(){ return (tile, unit); }
 }
 
 [System.Serializable]
