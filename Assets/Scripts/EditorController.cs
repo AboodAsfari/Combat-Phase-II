@@ -72,17 +72,19 @@ public class EditorController : MonoBehaviour{
         }else isDragging = false;
 
         if(Input.GetKeyDown("1")){
-            Debug.Log("Set elevation to -1");
+            Debug.Log("Set elevation to: -1");
             tileElevation = -1;
         }else if(Input.GetKeyDown("2")){
-            Debug.Log("Set elevation to 0");
+            Debug.Log("Set elevation to: 0");
             tileElevation = 0;
         }else if(Input.GetKeyDown("3")){
-            Debug.Log("Set elevation to 1");
+            Debug.Log("Set elevation to: 1");
             tileElevation = 1;
         }else if(Input.GetKeyDown("s")){
+            Debug.Log("Saving current edit");
             gsc.SaveFile();
         }else if(Input.GetKeyDown("l")){
+            Debug.Log("Loading save file");
             gsc.LoadFile();
         }
     }

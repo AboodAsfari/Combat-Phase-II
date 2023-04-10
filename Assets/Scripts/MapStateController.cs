@@ -100,7 +100,7 @@ public class MapStateController : MonoBehaviour{
         }
     }
 
-    public void SetMapPosition(Vector2Int point){
+    public void SetMapPosition(Vector2 point){
         Vector2 pos = Vector2.Scale(point , new Vector2(spriteInfo.width, spriteInfo.height - SpriteInfo.TILE_VERTICAL_OFFSET));
         mapContainer.transform.position = pos;
     }
