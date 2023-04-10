@@ -28,13 +28,13 @@ public class EditorTileSelector : MonoBehaviour{
     }
 
     // Turns on the hover visual for a tile when the mouse is over it.
-    public void OnMouseEnter(){
+    private void OnMouseEnter(){
         transform.Find("Tile Hover").gameObject.SetActive(true);
     }
 
     // Turns off the hover visual for a tile when the mouse 
     // is no longer over it.
-    public void OnMouseExit(){
+    private void OnMouseExit(){
         transform.Find("Tile Hover").gameObject.SetActive(false);
     }
 

@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cbc134084643514996416d45e37e113, type: 3}
-  m_Name: CliffsideSpriteInfo
+  m_Script: {fileID: 11500000, guid: 00545cbee0f027d459cbb47061160bff, type: 3}
+  m_Name: TestUnitInfo
   m_EditorClassIdentifier: 
-  width: 0
-  height: 0.3125
-  initX: 0
-  initY: 0.4508649
-  scaleX: 0
-  scaleY: 0.3125
+  unitName: 
+  unitType: 0
+  unitTags: 
+  maxHealth: 0
+  maxTraversalTokens: 0
+  maxActionTokens: 0
+  canWalkThrough: 0

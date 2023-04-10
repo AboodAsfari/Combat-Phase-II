@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 // The main game class which will control the map state. 
 // This means every entity will be accessed through here.
 public class MapStateController : MonoBehaviour{    
-    // The tile map.
+    // The two entity maps.
+    [HideInInspector]
     public Dictionary<Vector2Int, Tile> tileDict = new Dictionary<Vector2Int, Tile>();
+    [HideInInspector]
+    public Dictionary<Vector2Int, Unit> unitDict = new Dictionary<Vector2Int, Unit>();
     
     // Information used to place tiles in the correct world position.
     private Vector3 topLeft;
@@ -17,6 +21,11 @@ public class MapStateController : MonoBehaviour{
     // Stores map entities: tiles.
     private GameObject mapContainer;
     private GameObject tileContainer;
+    private GameObject unitContainer;
+
+    [HideInInspector]
+    // Tracks the currently selected entity.
+    public EntitySelect selectedEntity = new EntitySelect();
     
     // Fields related to loading map info.
     private string destination;
@@ -24,14 +33,19 @@ public class MapStateController : MonoBehaviour{
 
     // Loads position related info (top left position and tile sprite info), 
     // initializes map containers, and declares save file location.
-    public void Awake(){
+    private void Awake(){
         topLeft = Vector3.Scale(Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, Camera.main.nearClipPlane)), new Vector3(1, 1, 0));
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
 
         mapContainer = new GameObject("Map Container");
         tileContainer = new GameObject("Tile Container");
+        tileContainer.AddComponent<SortingGroup>().sortingOrder = 0;
         tileContainer.transform.parent = mapContainer.transform;
         tileContainer.transform.position = topLeft;
+        unitContainer = new GameObject("Unit Container");
+        unitContainer.AddComponent<SortingGroup>().sortingOrder = 1;
+        unitContainer.transform.parent = mapContainer.transform;
+        unitContainer.transform.position = topLeft;
 
         destination = Application.persistentDataPath + "/examplemap.dat";
     }
@@ -78,12 +92,37 @@ public class MapStateController : MonoBehaviour{
         }
     }
 
+    // Creates and returns a new unit using a position, ID, and player owner.
+    public GameObject CreateUnit(Vector2Int pos, UnitID unitID, PlayerController owner){
+        if(GetTile(pos) == null) return null;
+
+        // Creates the unit object.
+        GameObject prefab = Resources.Load("Units/" + unitID.GetPrefabName()) as GameObject;
+        GameObject unit = Instantiate(prefab, topLeft, Quaternion.identity, unitContainer.transform);
+        Unit unitScript = unit.GetComponent<Unit>();
+
+        // Sets tile properties and position.
+        unitScript.GetUnitState().SetPosition(pos);
+        unitScript.GetUnitState().SetOwner(owner);
+        unit.name = unitScript.GetUnitInfo().unitName + " at: (" + unitScript.GetUnitState().GetPosition().x + ", " + unitScript.GetUnitState().GetPosition().y + ")";
+        unit.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31)
+            + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * GetTile(pos).GetTileState().GetElevation(), 0);
+        return unit;
+    }
+
+    // Removes a unit from the unit map.
+    public void DeleteUnit(Vector2Int pos, bool deleteDict = true){
+        GameObject obj = unitDict[pos].gameObject;
+        if(deleteDict) unitDict.Remove(pos);
+        Destroy(obj);
+    }
+
     // Resets the tile map.
     public void ResetMap(){
-        foreach(Vector2Int pos in tileDict.Keys){
-            DeleteTile(pos, false);
-        }
+        foreach(Vector2Int pos in tileDict.Keys){ DeleteTile(pos, false); }
+        foreach(Vector2Int pos in unitDict.Keys){ DeleteUnit(pos, false); }
         tileDict.Clear();
+        unitDict.Clear();
     }
 
     // Saves the current tile map.
@@ -133,12 +172,23 @@ public class MapStateController : MonoBehaviour{
     }
     public void SetTile(int x, int y, Tile tile){ SetTile(new Vector2Int(x, y), tile); }
 
+    public void SetUnit(Vector2Int pos, Unit unit){ 
+        unitDict.Add(pos, unit); 
+    }
+    public void SetUnit(int x, int y, Unit unit){ SetUnit(new Vector2Int(x, y), unit); }
+
     // Getters.
     public Tile GetTile(Vector2Int pos){
         if(tileDict.ContainsKey(pos)) return tileDict[pos];
         return null;
     }
     public Tile GetTile(int x, int y){ return GetTile(new Vector2Int(x, y)); }
+
+    public Unit GetUnit(Vector2Int pos){
+        if(unitDict.ContainsKey(pos)) return unitDict[pos];
+        return null;
+    }
+    public Unit GetUnit(int x, int y){ return GetUnit(new Vector2Int(x, y)); }
 
     private Vector3 GetScreenPos(Vector2Int pos){
         SpriteInfo spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
@@ -148,6 +198,29 @@ public class MapStateController : MonoBehaviour{
     }
 
     public Vector3 GetTopLeft(){ return topLeft; }
+}
+
+public class EntitySelect{
+    private Tile tile;
+    private Unit unit;
+
+    public void ResetSelect(){
+        tile = null;
+        unit = null;
+    }
+
+    public void SetSelect(Tile tile){
+        ResetSelect();
+        this.tile = tile;
+    }
+
+    public void SetSelect(Unit unit){
+        ResetSelect();
+        this.unit = unit;
+    }
+
+    #nullable enable
+    public (Tile? tile, Unit? unit) GetSelect(){ return (tile, unit); }
 }
 
 [System.Serializable]
