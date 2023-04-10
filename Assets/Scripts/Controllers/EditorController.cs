@@ -2,40 +2,54 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the map editor.
 public class EditorController : MonoBehaviour{
     [SerializeField]
-    private GameObject gridSelect;
+    // The tile selector prefab.
+    private GameObject tileSelector;
+
     [SerializeField]
+    // The size of the tile selector grid.
     private Vector2 selectorGridSize;
 
     [HideInInspector]
-    public MapStateController gsc;
+    // The map state controller which is in charge
+    // of any map-relation function such as saving, loading,
+    // and interacting with map entities.
+    public MapStateController msc;
 
-    private List<EmptyTileSelector> selectorScripts;
+    // Contains the tile selectors.
+    private List<EditorTileSelector> selectorScripts;
     private GameObject tileSelectorContainer;
 
+    // Fields related to moving the map.
     private Vector2Int mapOffset = Vector2Int.zero;
     private Vector2Int initMapOffset;
     private Vector2 initMousePos;
     private bool isDragging = false;
     
+    // Information about the current tile that will be placed.
     private TileID currentTile = TileID.GRASS_TILE;
     private int tileElevation = 0;
     SpriteInfo spriteInfo;
 
+    // Creates a map state controller, then creates the tile selectors.
     private void Start(){
+        msc = gameObject.AddComponent<MapStateController>();
+
         tileSelectorContainer = new GameObject("Tile Selector Container");
-        gsc = gameObject.AddComponent<MapStateController>();
-        selectorScripts = new List<EmptyTileSelector>();
+        selectorScripts = new List<EditorTileSelector>();
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
         CreateTileSelectors();
     }
 
+    // Creats a new tile at the given position.
     public void CreateTile(Vector2Int pos){
-        GameObject tile = gsc.CreateTile(pos, currentTile, tileElevation);
-        gsc.SetTile(pos, tile.GetComponent<Tile>());
+        GameObject tile = msc.CreateTile(pos, currentTile, tileElevation);
+        msc.SetTile(pos, tile.GetComponent<Tile>());
     }
 
+    // Creates the grid of tile selectors.
     private void CreateTileSelectors(){
         tileSelectorContainer.transform.position = new Vector3(0f, 0f, 0f);
 
@@ -45,17 +59,19 @@ public class EditorController : MonoBehaviour{
                 float yPosOffset = -(spriteInfo.height - SpriteInfo.TILE_VERTICAL_OFFSET) * row;
                 Vector3 posOffset = new Vector3(xPosOffset, yPosOffset, 30);
 
-                GameObject selector = Instantiate(gridSelect, gsc.GetTopLeft() + posOffset, Quaternion.identity, tileSelectorContainer.transform);
+                GameObject selector = Instantiate(tileSelector, msc.GetTopLeft() + posOffset, Quaternion.identity, tileSelectorContainer.transform);
                 Vector3 oldPos = selector.transform.position;
                 selector.transform.position = new Vector3(oldPos.x, oldPos.y, 0f);
-                selector.GetComponent<EmptyTileSelector>().SetPosition(new Vector2Int(col, row));
+                selector.GetComponent<EditorTileSelector>().SetPosition(new Vector2Int(col, row));
                 selector.name = "Empty Tile Selector at: (" + col + ", " + row + ")";
-                selectorScripts.Add(selector.GetComponent<EmptyTileSelector>());
+                selectorScripts.Add(selector.GetComponent<EditorTileSelector>());
             }
         }
     }
 
+    // Allows map movement and keybinds for dev
     private void Update(){
+        // Moves the map (grid snap only).
         if(Input.GetMouseButton(2)){
             if(!isDragging){
                 isDragging = true;
@@ -66,10 +82,12 @@ public class EditorController : MonoBehaviour{
             Vector2 mouseDiff = new Vector2(mousePos.x - initMousePos.x, mousePos.y - initMousePos.y);
             Vector2Int posChange = Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.width, 1/spriteInfo.height)));
             mapOffset = initMapOffset + posChange;
-            gsc.SetMapPosition(mapOffset);
+            msc.SetMapPosition(mapOffset);
             tileSelectorContainer.transform.position = new Vector3(Math.Abs(mapOffset.y % 2) == 1 ? SpriteInfo.TILE_HORIZONTAL_OFFSET : 0f, 0f, 0f);
         }else isDragging = false;
 
+        // TODO: Remove these by adding user friendly functionality or putting them in a proper dev tool.
+        // Allows changing elevation, saving, and loading.
         if(Input.GetKeyDown("1")){
             Debug.Log("Setting elevation to: -1");
             tileElevation = -1;
@@ -81,12 +99,13 @@ public class EditorController : MonoBehaviour{
             tileElevation = 1;
         }else if(Input.GetKeyDown("s")){
             Debug.Log("Saving current edit...");
-            gsc.SaveFile();
+            msc.SaveFile();
         }else if(Input.GetKeyDown("l")){
             Debug.Log("Loading save file...");
-            gsc.LoadFile();
+            msc.LoadFile();
         }
     }
 
+    // Getters.
     public Vector2Int GetMapOffset(){ return mapOffset; }
 }

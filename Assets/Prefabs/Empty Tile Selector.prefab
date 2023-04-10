@@ -99,7 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3025473041218375986}
   - component: {fileID: 7324573054599979916}
-  - component: {fileID: 1017710485349452725}
+  - component: {fileID: 694406765487843604}
   - component: {fileID: 8782687489900109927}
   m_Layer: 0
   m_Name: Empty Tile Selector
@@ -181,7 +181,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1017710485349452725
+--- !u!114 &694406765487843604
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2322196927727148644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63584b03d40fc374ea1dbd70edabf2ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 12850c3295cafff4e9f71b9819e83e8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!60 &8782687489900109927

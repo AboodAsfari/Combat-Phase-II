@@ -1,19 +1,15 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Dynamic information about a tile.
 public class TileState : ScriptableObject{
+    // The tile position in the game grid.
     private Vector2Int pos;
-    private int elevation = 0 ;
 
-    public void SetPosition(Vector2Int pos){ this.pos = pos; }
+    // The elevation of the tile.
+    private int elevation = 0;
 
-    public void SetElevation(int elevation){ this.elevation = elevation; }
-
-    public Vector2Int GetPosition(){ return pos; }
-
-    public int GetElevation(){ return elevation; }
-
+    // Parses the tile state into a serializable token.
     public static TileState ParseToken(String token){
         TileState state = ScriptableObject.CreateInstance<TileState>();
         Vector2Int extractedPos = Vector2Int.zero;
@@ -30,5 +26,12 @@ public class TileState : ScriptableObject{
         return state;
     }
 
+    // Setters.
+    public void SetPosition(Vector2Int pos){ this.pos = pos; }
+    public void SetElevation(int elevation){ this.elevation = elevation; }
+
+    // Getters.
+    public Vector2Int GetPosition(){ return pos; }
+    public int GetElevation(){ return elevation; }
     public String GetToken(){ return "posx=" + pos.x + "&posy=" + pos.y + "&elevation=" + elevation; }
 }
