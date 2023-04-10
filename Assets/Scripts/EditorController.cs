@@ -49,7 +49,6 @@ public class EditorController : MonoBehaviour{
                 Vector3 oldPos = selector.transform.position;
                 selector.transform.position = new Vector3(oldPos.x, oldPos.y, 0f);
                 selector.GetComponent<EmptyTileSelector>().SetPosition(new Vector2Int(col, row));
-                selector.AddComponent<BoxCollider2D>().size = new Vector2(spriteInfo.width, spriteInfo.height);
                 selector.name = "Empty Tile Selector at: (" + col + ", " + row + ")";
                 selectorScripts.Add(selector.GetComponent<EmptyTileSelector>());
             }

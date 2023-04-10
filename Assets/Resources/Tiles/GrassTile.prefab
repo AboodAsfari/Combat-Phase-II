@@ -1692,7 +1692,7 @@ GameObject:
   - component: {fileID: 5230435862871584103}
   - component: {fileID: 3976553810378973655}
   - component: {fileID: 882157452010708732}
-  - component: {fileID: 3649300042612613677}
+  - component: {fileID: 3726196452608852968}
   m_Layer: 0
   m_Name: GrassTile
   m_TagString: Untagged
@@ -1781,8 +1781,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileName: GrassTile
---- !u!61 &3649300042612613677
-BoxCollider2D:
+--- !u!60 &3726196452608852968
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1791,7 +1791,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1804,9 +1804,14 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.9375, y: 1.9375}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.93691516, y: 0.4959537}
+      - {x: -0.0009226799, y: 0.96658885}
+      - {x: -0.9344001, y: 0.49564192}
+      - {x: -0.93435574, y: -0.49343166}
+      - {x: -0.0020942688, y: -0.9668933}
+      - {x: 0.9361248, y: -0.49593988}
 --- !u!1 &6027736981344507923
 GameObject:
   m_ObjectHideFlags: 0
