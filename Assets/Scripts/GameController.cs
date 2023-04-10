@@ -51,9 +51,7 @@ public class GameController : MonoBehaviour{
         if(!mapDrift.Equals(Vector2.zero) && camDriftOn && !camSnapOn){
             mapOffset += mapDrift;
             gsc.SetMapPosition(mapOffset);
-            float newX = Mathf.Lerp(mapDrift.x, 0, driftInterpolate);
-            float newY = Mathf.Lerp(mapDrift.y, 0, driftInterpolate);
-            mapDrift = new Vector2(newX, newY);
+            mapDrift = Vector2.Lerp(mapDrift, Vector2.zero, driftInterpolate);
             driftInterpolate += driftFadeFactor * Time.deltaTime;
         }
 
