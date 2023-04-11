@@ -14,9 +14,10 @@ public class MapStateController : MonoBehaviour{
     [HideInInspector]
     public Dictionary<Vector2Int, Unit> unitDict = new Dictionary<Vector2Int, Unit>();
     
-    // Information used to place tiles in the correct world position.
+    // Information used to place tiles and units in the correct world position.
     private Vector3 topLeft;
     SpriteInfo spriteInfo;
+    SpriteInfo unitInfo;
 
     // Stores map entities: tiles.
     private GameObject mapContainer;
@@ -36,6 +37,7 @@ public class MapStateController : MonoBehaviour{
     private void Awake(){
         topLeft = Vector3.Scale(Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, Camera.main.nearClipPlane)), new Vector3(1, 1, 0));
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
+        unitInfo = Resources.Load("SpriteInfo/UnitSpriteInfo") as SpriteInfo;
 
         mapContainer = new GameObject("Map Container");
         tileContainer = new GameObject("Tile Container");
@@ -105,7 +107,7 @@ public class MapStateController : MonoBehaviour{
         unitScript.GetUnitState().SetPosition(pos);
         unitScript.GetUnitState().SetOwner(owner);
         unit.name = unitScript.GetUnitInfo().unitName + " at: (" + unitScript.GetUnitState().GetPosition().x + ", " + unitScript.GetUnitState().GetPosition().y + ")";
-        unit.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31)
+        unit.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, unitInfo.initY, -31) 
             + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * GetTile(pos).GetTileState().GetElevation(), 0);
         return unit;
     }
