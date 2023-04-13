@@ -1775,10 +1775,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5230435862871584103}
   - component: {fileID: 3976553810378973655}
-  - component: {fileID: 882157452010708732}
   - component: {fileID: 3726196452608852968}
+  - component: {fileID: 5597949395632813026}
   m_Layer: 0
-  m_Name: GrassTile
+  m_Name: Grass Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1853,19 +1853,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &882157452010708732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5899016675211971872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2510ba62651820c4fbe6df70e303f133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileName: GrassTile
 --- !u!60 &3726196452608852968
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1897,6 +1884,19 @@ PolygonCollider2D:
       - {x: -0.93435574, y: -0.49343166}
       - {x: -0.0020942688, y: -0.9668933}
       - {x: 0.9361248, y: -0.49593988}
+--- !u!114 &5597949395632813026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5899016675211971872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec02c5ee1d60ef247981c1c53980a4ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileInfo: {fileID: 11400000, guid: cd7e7be8d4785974bb8db9b9288c6312, type: 2}
 --- !u!1 &6027736981344507923
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,8 +3,9 @@ using UnityEditor;
 using UnityEngine;
 
 // Base class for all tiles.
-public abstract class Tile : MonoBehaviour{
+public class Tile : MonoBehaviour{
     // Information about the tile.
+    [SerializeField]
     protected TileInfo tileInfo;
     protected TileState tileState;
 
@@ -27,7 +28,6 @@ public abstract class Tile : MonoBehaviour{
         if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
         else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
 
-        tileInfo = Resources.Load("TileInfo/" + this.GetType().ToString() + "Info") as TileInfo;
         tileState = ScriptableObject.CreateInstance<TileState>();
 
         cliffsideSpriteInfo = Resources.Load("SpriteInfo/CliffsideSpriteInfo") as SpriteInfo;
@@ -155,7 +155,7 @@ public abstract class Tile : MonoBehaviour{
     // Gets the ID of the current tile.
     public virtual TileID GetID(){ 
         foreach(TileID id in Enum.GetValues(typeof(TileID))){
-            if(id.GetPrefabName() == ObjectNames.GetClassName(this)) return id;
+            if(id.GetPrefabName() == tileInfo.tileName) return id;
         }
         return TileID.NULL_VALUE;
     }
@@ -171,7 +171,7 @@ public enum TileID{
 public static class TileExtensions{
     public static String GetPrefabName(this TileID type){
         switch(type){
-            case TileID.GRASS_TILE : return "GrassTile";
+            case TileID.GRASS_TILE : return "Grass Tile";
         }
         return null;
     }
