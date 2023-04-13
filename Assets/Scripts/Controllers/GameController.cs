@@ -38,8 +38,8 @@ public class GameController : MonoBehaviour{
 
         playerOne = gameObject.AddComponent<PlayerController>();
         playerTwo = gameObject.AddComponent<PlayerController>();
-        playerOne.SetPlayerNum(1);
-        playerTwo.SetPlayerNum(2);
+        playerOne.SetPlayerCol(PlayerColor.BLUE);
+        playerTwo.SetPlayerCol(PlayerColor.RED);
 
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
 

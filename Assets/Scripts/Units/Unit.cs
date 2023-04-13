@@ -24,7 +24,20 @@ public abstract class Unit : MonoBehaviour{
     }
 
     // Setters.
-    public void SetHover(bool isHover){ unitAnimator.SetBool("Hovering", isHover); }
+    public void SetHover(bool isHover){ 
+        // if(isHover) unitAnimator.Play("Hover", GetUnitState().GetOwner().GetPlayerNum() - 1, unitAnimator.GetCurrentAnimatorStateInfo(GetUnitState().GetOwner().GetPlayerNum() - 1).normalizedTime);
+        // else unitAnimator.Play("Idle", GetUnitState().GetOwner().GetPlayerNum() - 1, unitAnimator.GetCurrentAnimatorStateInfo(GetUnitState().GetOwner().GetPlayerNum() - 1).normalizedTime);
+    
+        if(isHover) unitAnimator.Play("Hover", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        else unitAnimator.Play("Idle", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+    }
+
+    public void UpdatedOwner(){
+        bool isRed = GetUnitState().GetOwner().GetPlayerCol() == PlayerColor.RED;
+        GetComponent<SpriteRenderer>().flipX = isRed;
+        if(isRed) unitAnimator.SetLayerWeight(1, 1f);
+        else unitAnimator.SetLayerWeight(1, 0f);
+    }
 
     // Getters.
     public UnitInfo GetUnitInfo(){ return unitInfo; }

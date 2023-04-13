@@ -4,9 +4,14 @@ using UnityEngine;
 
 // Controls player game actions and information.
 public class PlayerController : MonoBehaviour{
-    private int playerNum;
+    private PlayerColor playerCol;
 
-    public void SetPlayerNum(int playerNum){ this.playerNum = playerNum; }
+    public void SetPlayerCol(PlayerColor playerCol){ this.playerCol = playerCol; }
 
-    public int GetPlayerNum(){ return playerNum; }
+    public PlayerColor GetPlayerCol(){ return playerCol; }
+}
+
+public enum PlayerColor{
+    BLUE,
+    RED
 }

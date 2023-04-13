@@ -106,7 +106,7 @@ public class MapStateController : MonoBehaviour{
         // Sets tile properties and position.
         unitScript.GetUnitState().SetPosition(pos);
         unitScript.GetUnitState().SetOwner(owner);
-        unit.GetComponent<SpriteRenderer>().flipX = owner.GetPlayerNum() == 2;
+        unitScript.UpdatedOwner();
         unit.name = unitScript.GetUnitInfo().unitName + " at: (" + unitScript.GetUnitState().GetPosition().x + ", " + unitScript.GetUnitState().GetPosition().y + ")";
         unit.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, unitInfo.initY, -31) 
             + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * GetTile(pos).GetTileState().GetElevation(), 0);
