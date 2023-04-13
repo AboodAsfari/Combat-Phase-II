@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00545cbee0f027d459cbb47061160bff, type: 3}
-  m_Name: TestUnitInfo
+  m_Script: {fileID: 11500000, guid: 3cbc134084643514996416d45e37e113, type: 3}
+  m_Name: UnitSpriteInfo
   m_EditorClassIdentifier: 
-  unitName: Testy Boy
-  unitType: 0
-  unitTags: 0000000001000000
-  maxHealth: 12
-  maxTraversalTokens: 5
-  maxActionTokens: 2
-  canWalkThrough: 0
+  width: 0
+  height: 0
+  initX: 0
+  initY: 0.171875
+  scaleX: 0
+  scaleY: 0

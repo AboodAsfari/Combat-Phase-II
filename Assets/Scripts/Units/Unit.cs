@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 
 // Base class for all units.
@@ -7,6 +6,8 @@ public abstract class Unit : MonoBehaviour{
     // Information about the unit.
     protected UnitInfo unitInfo;
     protected UnitState unitState;
+
+    protected Animator unitAnimator;
 
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
@@ -18,6 +19,24 @@ public abstract class Unit : MonoBehaviour{
 
         unitInfo = Resources.Load("UnitInfo/" + this.GetType().ToString() + "Info") as UnitInfo;
         unitState = ScriptableObject.CreateInstance<UnitState>();
+
+        unitAnimator = GetComponent<Animator>();
+    }
+
+    // Setters.
+    public void SetHover(bool isHover){ 
+        // if(isHover) unitAnimator.Play("Hover", GetUnitState().GetOwner().GetPlayerNum() - 1, unitAnimator.GetCurrentAnimatorStateInfo(GetUnitState().GetOwner().GetPlayerNum() - 1).normalizedTime);
+        // else unitAnimator.Play("Idle", GetUnitState().GetOwner().GetPlayerNum() - 1, unitAnimator.GetCurrentAnimatorStateInfo(GetUnitState().GetOwner().GetPlayerNum() - 1).normalizedTime);
+    
+        if(isHover) unitAnimator.Play("Hover", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        else unitAnimator.Play("Idle", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+    }
+
+    public void UpdatedOwner(){
+        bool isRed = GetUnitState().GetOwner().GetPlayerCol() == PlayerColor.RED;
+        GetComponent<SpriteRenderer>().flipX = isRed;
+        if(isRed) unitAnimator.SetLayerWeight(1, 1f);
+        else unitAnimator.SetLayerWeight(1, 0f);
     }
 
     // Getters.
