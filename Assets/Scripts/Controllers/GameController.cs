@@ -38,10 +38,13 @@ public class GameController : MonoBehaviour{
 
         playerOne = gameObject.AddComponent<PlayerController>();
         playerTwo = gameObject.AddComponent<PlayerController>();
+        playerOne.SetPlayerNum(1);
+        playerTwo.SetPlayerNum(2);
 
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
 
         msc.SetUnit(new Vector2Int(5, 5), msc.CreateUnit(new Vector2Int(5, 5), UnitID.TST_UNIT, playerOne).GetComponent<Unit>());
+        msc.SetUnit(new Vector2Int(7, 5), msc.CreateUnit(new Vector2Int(7, 5), UnitID.TST_UNIT, playerTwo).GetComponent<Unit>());
     }
 
     // Allows map movement, and toggling camera options.

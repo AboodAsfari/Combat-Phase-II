@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 
 // Base class for all units.
@@ -7,6 +6,8 @@ public abstract class Unit : MonoBehaviour{
     // Information about the unit.
     protected UnitInfo unitInfo;
     protected UnitState unitState;
+
+    protected Animator unitAnimator;
 
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
@@ -18,7 +19,12 @@ public abstract class Unit : MonoBehaviour{
 
         unitInfo = Resources.Load("UnitInfo/" + this.GetType().ToString() + "Info") as UnitInfo;
         unitState = ScriptableObject.CreateInstance<UnitState>();
+
+        unitAnimator = GetComponent<Animator>();
     }
+
+    // Setters.
+    public void SetHover(bool isHover){ unitAnimator.SetBool("Hovering", isHover); }
 
     // Getters.
     public UnitInfo GetUnitInfo(){ return unitInfo; }

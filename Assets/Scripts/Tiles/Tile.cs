@@ -15,6 +15,9 @@ public abstract class Tile : MonoBehaviour{
     // Tracks whether the map editor is currently open.
     private bool editing = false;
 
+    // Tracks whether or not the tile is being hovered.
+    private bool isHover = false;
+
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
 
@@ -34,13 +37,18 @@ public abstract class Tile : MonoBehaviour{
     // Deletes a tile if the editor is open and the right mouse button 
     // is pressed over the tile.
     private void OnMouseOver(){
-        if(Input.GetMouseButton(2)){
-            transform.Find("Tile Hover").gameObject.SetActive(false);
-            return;
-        }else if(!transform.Find("Tile Hover").gameObject.activeSelf) transform.Find("Tile Hover").gameObject.SetActive(true);
-
         if(Input.GetMouseButton(1) && editing && msc.GetTile(tileState.GetPosition()) != null){
             msc.DeleteTile(tileState.GetPosition());
+        }
+
+        if(Input.GetMouseButton(2)){
+            transform.Find("Tile Hover").gameObject.SetActive(false);
+            if(msc.GetUnit(tileState.GetPosition()) != null) msc.GetUnit(tileState.GetPosition()).SetHover(false);
+            return;
+        }else if(!isHover){
+            isHover = true;
+            if(msc.GetUnit(tileState.GetPosition()) != null) msc.GetUnit(tileState.GetPosition()).SetHover(true);
+            else transform.Find("Tile Hover").gameObject.SetActive(true);
         }
     }
     
@@ -54,7 +62,9 @@ public abstract class Tile : MonoBehaviour{
     // Turns off the hover visual for a tile when the mouse 
     // is no longer over it.
     private void OnMouseExit(){
+        isHover = false;
         transform.Find("Tile Hover").gameObject.SetActive(false);
+        if(msc.GetUnit(tileState.GetPosition()) != null) msc.GetUnit(tileState.GetPosition()).SetHover(false);
     }
 
     // Setters.
