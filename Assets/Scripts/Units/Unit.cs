@@ -2,8 +2,9 @@ using System;
 using UnityEngine;
 
 // Base class for all units.
-public abstract class Unit : MonoBehaviour{
+public class Unit : MonoBehaviour{
     // Information about the unit.
+    [SerializeField]
     protected UnitInfo unitInfo;
     protected UnitState unitState;
 
@@ -17,7 +18,6 @@ public abstract class Unit : MonoBehaviour{
         if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
         else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
 
-        unitInfo = Resources.Load("UnitInfo/" + this.GetType().ToString() + "Info") as UnitInfo;
         unitState = ScriptableObject.CreateInstance<UnitState>();
 
         unitAnimator = GetComponent<Animator>();
@@ -25,9 +25,6 @@ public abstract class Unit : MonoBehaviour{
 
     // Setters.
     public void SetHover(bool isHover){ 
-        // if(isHover) unitAnimator.Play("Hover", GetUnitState().GetOwner().GetPlayerNum() - 1, unitAnimator.GetCurrentAnimatorStateInfo(GetUnitState().GetOwner().GetPlayerNum() - 1).normalizedTime);
-        // else unitAnimator.Play("Idle", GetUnitState().GetOwner().GetPlayerNum() - 1, unitAnimator.GetCurrentAnimatorStateInfo(GetUnitState().GetOwner().GetPlayerNum() - 1).normalizedTime);
-    
         if(isHover) unitAnimator.Play("Hover", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
         else unitAnimator.Play("Idle", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
     }
@@ -53,7 +50,7 @@ public enum UnitID{
 public static class UnitExtensions{
     public static String GetPrefabName(this UnitID type){
         switch(type){
-            case UnitID.TST_UNIT : return "TestUnit";
+            case UnitID.TST_UNIT : return "Test Unit";
         }
         return null;
     }

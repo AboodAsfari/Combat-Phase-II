@@ -105,10 +105,10 @@ AnimatorController:
     m_Motions:
     - serializedVersion: 2
       m_State: {fileID: -1081749362846254479}
-      m_Motion: {fileID: 7400000, guid: a0424bf0da54b23489779ece5aa3ed04, type: 2}
+      m_Motion: {fileID: 7400000, guid: 406caaaed08fedf4488963c48f0e220d, type: 2}
     - serializedVersion: 2
       m_State: {fileID: 2522936344398292666}
-      m_Motion: {fileID: 7400000, guid: 1bf4824442826ed4e9042792dd393e56, type: 2}
+      m_Motion: {fileID: 7400000, guid: 25c82286564e57e4a9f0ac4c529804cc, type: 2}
     m_Behaviours: []
     m_BlendingMode: 0
     m_SyncedLayerIndex: 0
