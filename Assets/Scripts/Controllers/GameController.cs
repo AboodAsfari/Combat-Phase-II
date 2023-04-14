@@ -26,10 +26,17 @@ public class GameController : MonoBehaviour{
     private bool camDriftOn = true;
 
     // Information about the tile sprite.
-    SpriteInfo spriteInfo;
+    private SpriteInfo spriteInfo;
 
-    PlayerController playerOne;
-    PlayerController playerTwo;
+    // The two players in the game.
+    private PlayerController playerOne;
+    private PlayerController playerTwo;
+
+    // Tracks the currently selected entity.
+    [HideInInspector]
+    private Tile selectedTile;
+    [HideInInspector]
+    private Unit selectedUnit;
     
     // Creates a new map state controller and loads the tile sprite info.
     private void Start(){
@@ -45,6 +52,24 @@ public class GameController : MonoBehaviour{
 
         msc.SetUnit(new Vector2Int(5, 5), msc.CreateUnit(new Vector2Int(5, 5), UnitID.TST_UNIT, playerOne).GetComponent<Unit>());
         msc.SetUnit(new Vector2Int(7, 5), msc.CreateUnit(new Vector2Int(7, 5), UnitID.TST_UNIT, playerTwo).GetComponent<Unit>());
+    }
+
+    // Resets entity selection.
+    public void ResetSelect(){
+        selectedTile = null;
+        selectedUnit = null;
+    }
+
+    // Selects an entity.
+    public void SelectEntity(Tile tile){
+        ResetSelect();
+        selectedTile = tile;
+        Debug.Log("Selected a tile at: " + tile.GetTileState().GetPosition());
+    }
+    public void SelectEntity(Unit unit){
+        ResetSelect();
+        selectedUnit = unit;
+        Debug.Log("Selected a unit at: " + unit.GetUnitState().GetPosition());
     }
 
     // Allows map movement, and toggling camera options.

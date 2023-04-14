@@ -23,10 +23,6 @@ public class MapStateController : MonoBehaviour{
     private GameObject mapContainer;
     private GameObject tileContainer;
     private GameObject unitContainer;
-
-    [HideInInspector]
-    // Tracks the currently selected entity.
-    public EntitySelect selectedEntity = new EntitySelect();
     
     // Fields related to loading map info.
     private string destination;
@@ -201,29 +197,6 @@ public class MapStateController : MonoBehaviour{
     }
 
     public Vector3 GetTopLeft(){ return topLeft; }
-}
-
-public class EntitySelect{
-    private Tile tile;
-    private Unit unit;
-
-    public void ResetSelect(){
-        tile = null;
-        unit = null;
-    }
-
-    public void SetSelect(Tile tile){
-        ResetSelect();
-        this.tile = tile;
-    }
-
-    public void SetSelect(Unit unit){
-        ResetSelect();
-        this.unit = unit;
-    }
-
-    #nullable enable
-    public (Tile? tile, Unit? unit) GetSelect(){ return (tile, unit); }
 }
 
 [System.Serializable]
