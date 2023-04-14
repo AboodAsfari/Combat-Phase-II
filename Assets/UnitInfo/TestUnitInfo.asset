@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00545cbee0f027d459cbb47061160bff, type: 3}
   m_Name: TestUnitInfo
   m_EditorClassIdentifier: 
-  unitName: Testy Boy
+  unitName: Test Unit
   unitType: 0
   unitTags: 0000000001000000
   maxHealth: 12

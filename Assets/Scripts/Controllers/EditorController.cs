@@ -51,7 +51,7 @@ public class EditorController : MonoBehaviour{
 
     // Creates the grid of tile selectors.
     private void CreateTileSelectors(){
-        tileSelectorContainer.transform.position = new Vector3(0f, 0f, 0f);
+        tileSelectorContainer.transform.position = new Vector3(0f, 0f, 1f);
 
         for(int col = 0; col < selectorGridSize.x; col++){
             for(int row = 0; row < selectorGridSize.y; row++){  
@@ -61,7 +61,7 @@ public class EditorController : MonoBehaviour{
 
                 GameObject selector = Instantiate(tileSelector, msc.GetTopLeft() + posOffset, Quaternion.identity, tileSelectorContainer.transform);
                 Vector3 oldPos = selector.transform.position;
-                selector.transform.position = new Vector3(oldPos.x, oldPos.y, 0f);
+                selector.transform.position = new Vector3(oldPos.x, oldPos.y, 1f);
                 selector.GetComponent<EditorTileSelector>().SetPosition(new Vector2Int(col, row));
                 selector.name = "Empty Tile Selector at: (" + col + ", " + row + ")";
                 selectorScripts.Add(selector.GetComponent<EditorTileSelector>());
