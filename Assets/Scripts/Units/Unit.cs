@@ -8,10 +8,13 @@ public class Unit : MonoBehaviour{
     protected UnitInfo unitInfo;
     protected UnitState unitState;
 
+    // Controls unit animations.
     protected Animator unitAnimator;
 
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
+
+    public Action action;
 
     // Loads map state controller, as well as unit information.
     protected void Awake(){

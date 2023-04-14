@@ -84,7 +84,7 @@ public class GameController : MonoBehaviour{
             }   
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 mouseDiff = new Vector2(mousePos.x - initMousePos.x, mousePos.y - initMousePos.y);
-            Vector2 posChange = camSnapOn ? Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.width, 1/spriteInfo.height))) : mouseDiff;
+            Vector2 posChange = camSnapOn ? Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.GetWidth(), 1/spriteInfo.GetHeight()))) : mouseDiff;
             prevMousePos = mousePos;
             mapOffset = initMapOffset + posChange;
             msc.SetMapPosition(mapOffset);

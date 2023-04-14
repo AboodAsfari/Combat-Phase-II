@@ -131,9 +131,9 @@ public class Tile : MonoBehaviour{
             if(GetAdjacent(topDir) != null && GetElevation(topDir) == tileState.GetElevation()) extraTopLayers = tileState.GetElevation() + 1;
             if(GetAdjacent(sideDir) != null && GetElevation(sideDir) < tileState.GetElevation() && extraTopLayers != 0) extraTopLayers -= GetElevation(sideDir) + 2;
             if(GetAdjacent(bottomDir) != null && GetElevation(bottomDir) > tileState.GetElevation()) diffBottomLayers = GetElevation(bottomDir) - tileState.GetElevation();
-            border.transform.localScale = new Vector3(1, sideBorderSpriteInfo.scaleY - ((extraTopLayers + diffBottomLayers) * sideBorderSpriteInfo.height), 1);
-            border.transform.localPosition = new Vector3(border.transform.localPosition.x, sideBorderSpriteInfo.initY 
-                - (extraTopLayers * sideBorderSpriteInfo.height * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.height * 0.5f), border.transform.localPosition.z);
+            border.transform.localScale = new Vector3(1, sideBorderSpriteInfo.GetScaleY() - ((extraTopLayers + diffBottomLayers) * sideBorderSpriteInfo.GetHeight()), 1);
+            border.transform.localPosition = new Vector3(border.transform.localPosition.x, sideBorderSpriteInfo.GetInitY() 
+                - (extraTopLayers * sideBorderSpriteInfo.GetHeight() * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.GetHeight() * 0.5f), border.transform.localPosition.z);
         }
 
         // Sets the height and position of a cliffside.
@@ -149,9 +149,9 @@ public class Tile : MonoBehaviour{
             cliffside.transform.GetChild(layers - 1).gameObject.SetActive(true);
 
             Transform cornerBorder = bottomCorner.transform;
-            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.scaleY * layers, 1);
-            cornerBorder.localPosition = new Vector3(cornerBorder.localPosition.x, cliffsideSpriteInfo.initY 
-                - (cliffsideSpriteInfo.height * (layers - 1) * 0.5f), cornerBorder.localPosition.z); 
+            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.GetScaleY() * layers, 1);
+            cornerBorder.localPosition = new Vector3(cornerBorder.localPosition.x, cliffsideSpriteInfo.GetInitY() 
+                - (cliffsideSpriteInfo.GetHeight() * (layers - 1) * 0.5f), cornerBorder.localPosition.z); 
         }
 
         // Helper methods that get adjacent tiles and check them 
@@ -165,7 +165,7 @@ public class Tile : MonoBehaviour{
     // Gets the ID of the current tile.
     public virtual TileID GetID(){ 
         foreach(TileID id in Enum.GetValues(typeof(TileID))){
-            if(id.GetPrefabName() == tileInfo.tileName) return id;
+            if(id.GetPrefabName() == tileInfo.GetTileName()) return id;
         }
         return TileID.NULL_VALUE;
     }
