@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e91282d17e29e4797819964a4b6264, type: 3}
   m_Name: TestAction
   m_EditorClassIdentifier: 
-  actionName: 
-  baseDescription: 
-  baseEnhancedDescription: 
+  actionName: Test Action
+  actionDescription: This is a terrible action wow.
+  enhancesInto: {fileID: 11400000}
   tokenType: 0
-  tokenCost: 0
-  isWhitelist: 0
-  unitList: 
+  tokenCost: 3
+  isWhitelist: 1
+  unitList: 00000000

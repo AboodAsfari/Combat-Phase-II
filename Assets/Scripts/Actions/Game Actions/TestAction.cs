@@ -5,8 +5,6 @@ public class TestAction : Action{
     public override void ExecuteAction(Unit unit, MapStateController msc){
         EnforceUnitList(unit, msc);
         ConsumeTokens(unit, msc);
-        Debug.Log("HELLOOOO");
-        Debug.Log(unit.GetUnitState().GetActionTokens());
-        // throw new System.NotImplementedException();
+        Debug.Log("Action Tokens Left: " + unit.GetUnitState().GetActionTokens());
     }
 }

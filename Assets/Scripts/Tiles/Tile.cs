@@ -51,6 +51,10 @@ public class Tile : MonoBehaviour{
             msc.DeleteTile(tileState.GetPosition());
         }
 
+        if(Input.GetMouseButton(1) && !editing && gameController.IsInTileOverride()){
+            gameController.ExitTileOverride();
+        }
+
         if(Input.GetMouseButton(2)){
             transform.Find("Tile Hover").gameObject.SetActive(false);
             if(msc.GetUnit(tileState.GetPosition()) != null) msc.GetUnit(tileState.GetPosition()).SetHover(false);
@@ -65,8 +69,16 @@ public class Tile : MonoBehaviour{
     // Selects an entity on the tile, the priority order is unit > building > tile.
     private void OnMouseDown(){
         if(editing) return;
-        if(msc.GetUnit(tileState.GetPosition()) != null) gameController.SelectEntity(msc.GetUnit(tileState.GetPosition()));
-        else gameController.SelectEntity(GetComponent<Tile>());
+        if(gameController.IsInTileOverride()){
+            if(transform.Find("Tile Override").gameObject.activeSelf){
+                Action<Vector2Int> action = gameController.GetOverrideFunction();
+                gameController.ExitTileOverride();
+                action(GetTileState().GetPosition());
+            }else gameController.ExitTileOverride();
+        }else{
+            if(msc.GetUnit(tileState.GetPosition()) != null) gameController.SelectEntity(msc.GetUnit(tileState.GetPosition()));
+            else gameController.SelectEntity(GetComponent<Tile>());
+        }
     }
 
     // Turns off the hover visual for a tile when the mouse 

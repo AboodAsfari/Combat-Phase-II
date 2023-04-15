@@ -65,6 +65,7 @@ public class MapStateController : MonoBehaviour{
 
         // Sets the sorting order of the tile and its children.
         tile.GetComponent<SpriteRenderer>().sortingOrder = elevation;
+        tile.transform.Find("Tile Override").GetComponent<SpriteRenderer>().sortingOrder = elevation;
         tile.transform.Find("Tile Hover").GetComponent<SpriteRenderer>().sortingOrder = elevation;
         foreach(Transform child in tile.transform.Find("Borders & Cliffside")){
             if(child.childCount > 0){
