@@ -51,17 +51,17 @@ public class EditorController : MonoBehaviour{
 
     // Creates the grid of tile selectors.
     private void CreateTileSelectors(){
-        tileSelectorContainer.transform.position = new Vector3(0f, 0f, 0f);
+        tileSelectorContainer.transform.position = new Vector3(0f, 0f, 1f);
 
         for(int col = 0; col < selectorGridSize.x; col++){
             for(int row = 0; row < selectorGridSize.y; row++){  
-                float xPosOffset = (spriteInfo.width * col) + (row % 2 == 0 ? SpriteInfo.TILE_HORIZONTAL_OFFSET : 0f);
-                float yPosOffset = -(spriteInfo.height - SpriteInfo.TILE_VERTICAL_OFFSET) * row;
+                float xPosOffset = (spriteInfo.GetWidth() * col) + (row % 2 == 0 ? SpriteInfo.TILE_HORIZONTAL_OFFSET : 0f);
+                float yPosOffset = -(spriteInfo.GetHeight() - SpriteInfo.TILE_VERTICAL_OFFSET) * row;
                 Vector3 posOffset = new Vector3(xPosOffset, yPosOffset, 30);
 
                 GameObject selector = Instantiate(tileSelector, msc.GetTopLeft() + posOffset, Quaternion.identity, tileSelectorContainer.transform);
                 Vector3 oldPos = selector.transform.position;
-                selector.transform.position = new Vector3(oldPos.x, oldPos.y, 0f);
+                selector.transform.position = new Vector3(oldPos.x, oldPos.y, 1f);
                 selector.GetComponent<EditorTileSelector>().SetPosition(new Vector2Int(col, row));
                 selector.name = "Empty Tile Selector at: (" + col + ", " + row + ")";
                 selectorScripts.Add(selector.GetComponent<EditorTileSelector>());
@@ -80,7 +80,7 @@ public class EditorController : MonoBehaviour{
             }   
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 mouseDiff = new Vector2(mousePos.x - initMousePos.x, mousePos.y - initMousePos.y);
-            Vector2Int posChange = Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.width, 1/spriteInfo.height)));
+            Vector2Int posChange = Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.GetWidth(), 1/spriteInfo.GetHeight())));
             mapOffset = initMapOffset + posChange;
             msc.SetMapPosition(mapOffset);
             tileSelectorContainer.transform.position = new Vector3(Math.Abs(mapOffset.y % 2) == 1 ? SpriteInfo.TILE_HORIZONTAL_OFFSET : 0f, 0f, 0f);

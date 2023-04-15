@@ -26,10 +26,17 @@ public class GameController : MonoBehaviour{
     private bool camDriftOn = true;
 
     // Information about the tile sprite.
-    SpriteInfo spriteInfo;
+    private SpriteInfo spriteInfo;
 
-    PlayerController playerOne;
-    PlayerController playerTwo;
+    // The two players in the game.
+    private PlayerController playerOne;
+    private PlayerController playerTwo;
+
+    // Tracks the currently selected entity.
+    [HideInInspector]
+    private Tile selectedTile;
+    [HideInInspector]
+    private Unit selectedUnit;
     
     // Creates a new map state controller and loads the tile sprite info.
     private void Start(){
@@ -47,6 +54,24 @@ public class GameController : MonoBehaviour{
         msc.SetUnit(new Vector2Int(7, 5), msc.CreateUnit(new Vector2Int(7, 5), UnitID.TST_UNIT, playerTwo).GetComponent<Unit>());
     }
 
+    // Resets entity selection.
+    public void ResetSelect(){
+        selectedTile = null;
+        selectedUnit = null;
+    }
+
+    // Selects an entity.
+    public void SelectEntity(Tile tile){
+        ResetSelect();
+        selectedTile = tile;
+        Debug.Log("Selected a tile at: " + tile.GetTileState().GetPosition());
+    }
+    public void SelectEntity(Unit unit){
+        ResetSelect();
+        selectedUnit = unit;
+        Debug.Log("Selected a unit at: " + unit.GetUnitState().GetPosition());
+    }
+
     // Allows map movement, and toggling camera options.
     private void Update(){
         // Moves the map and adds map drift when drag is over.
@@ -59,7 +84,7 @@ public class GameController : MonoBehaviour{
             }   
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 mouseDiff = new Vector2(mousePos.x - initMousePos.x, mousePos.y - initMousePos.y);
-            Vector2 posChange = camSnapOn ? Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.width, 1/spriteInfo.height))) : mouseDiff;
+            Vector2 posChange = camSnapOn ? Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.GetWidth(), 1/spriteInfo.GetHeight()))) : mouseDiff;
             prevMousePos = mousePos;
             mapOffset = initMapOffset + posChange;
             msc.SetMapPosition(mapOffset);
@@ -79,13 +104,18 @@ public class GameController : MonoBehaviour{
         }
 
         // TODO: Remove these by adding user friendly functionality or putting them in a proper dev tool.
-        // Toggles camera snap and camera drift.
+        // Toggles camera snap and camera drift, and executes actions.
         if(Input.GetKeyDown("c")){
             Debug.Log("Turning camera snap " + (camSnapOn ? "on" : "off"));
             camSnapOn = !camSnapOn;
         }else if(Input.GetKeyDown("d")){
             Debug.Log("Turning camera drift " + (camDriftOn ? "on" : "off"));
             camDriftOn = !camDriftOn;
+        }else if(selectedUnit != null){
+            if(Input.GetKeyDown("1")) selectedUnit.ExecuteAction(0);
+            if(Input.GetKeyDown("2")) selectedUnit.ExecuteAction(1);
+            if(Input.GetKeyDown("3")) selectedUnit.ExecuteAction(2);
+            if(Input.GetKeyDown("4")) selectedUnit.ExecuteAction(3);
         }
     }
 }

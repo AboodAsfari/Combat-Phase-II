@@ -22,11 +22,21 @@ public class Tile : MonoBehaviour{
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
 
+    // References to either the editor controller or the game controller,
+    // one of these will always be null.
+    private EditorController editorController;
+    private GameController gameController;
+
     // Loads map state controller, as well as tile information
     // and tile sprite info.
     protected void Awake(){
-        if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
-        else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
+        if(GameObject.Find("Editor Controller") != null){
+            editorController = GameObject.Find("Editor Controller").GetComponent<EditorController>(); 
+            msc = editorController.msc;
+        }else{
+            gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
+            msc = gameController.msc;
+        }
 
         tileState = ScriptableObject.CreateInstance<TileState>();
 
@@ -52,11 +62,11 @@ public class Tile : MonoBehaviour{
         }
     }
     
-    // TODO: Call OnClick() hooks for map entities. 
+    // Selects an entity on the tile, the priority order is unit > building > tile.
     private void OnMouseDown(){
         if(editing) return;
-        msc.selectedEntity.SetSelect(GetComponent<Tile>());
-        Debug.Log("Clicked on tile at: " + tileState.GetPosition());
+        if(msc.GetUnit(tileState.GetPosition()) != null) gameController.SelectEntity(msc.GetUnit(tileState.GetPosition()));
+        else gameController.SelectEntity(GetComponent<Tile>());
     }
 
     // Turns off the hover visual for a tile when the mouse 
@@ -121,9 +131,9 @@ public class Tile : MonoBehaviour{
             if(GetAdjacent(topDir) != null && GetElevation(topDir) == tileState.GetElevation()) extraTopLayers = tileState.GetElevation() + 1;
             if(GetAdjacent(sideDir) != null && GetElevation(sideDir) < tileState.GetElevation() && extraTopLayers != 0) extraTopLayers -= GetElevation(sideDir) + 2;
             if(GetAdjacent(bottomDir) != null && GetElevation(bottomDir) > tileState.GetElevation()) diffBottomLayers = GetElevation(bottomDir) - tileState.GetElevation();
-            border.transform.localScale = new Vector3(1, sideBorderSpriteInfo.scaleY - ((extraTopLayers + diffBottomLayers) * sideBorderSpriteInfo.height), 1);
-            border.transform.localPosition = new Vector3(border.transform.localPosition.x, sideBorderSpriteInfo.initY 
-                - (extraTopLayers * sideBorderSpriteInfo.height * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.height * 0.5f), border.transform.localPosition.z);
+            border.transform.localScale = new Vector3(1, sideBorderSpriteInfo.GetScaleY() - ((extraTopLayers + diffBottomLayers) * sideBorderSpriteInfo.GetHeight()), 1);
+            border.transform.localPosition = new Vector3(border.transform.localPosition.x, sideBorderSpriteInfo.GetInitY() 
+                - (extraTopLayers * sideBorderSpriteInfo.GetHeight() * 0.5f) + (diffBottomLayers * sideBorderSpriteInfo.GetHeight() * 0.5f), border.transform.localPosition.z);
         }
 
         // Sets the height and position of a cliffside.
@@ -139,9 +149,9 @@ public class Tile : MonoBehaviour{
             cliffside.transform.GetChild(layers - 1).gameObject.SetActive(true);
 
             Transform cornerBorder = bottomCorner.transform;
-            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.scaleY * layers, 1);
-            cornerBorder.localPosition = new Vector3(cornerBorder.localPosition.x, cliffsideSpriteInfo.initY 
-                - (cliffsideSpriteInfo.height * (layers - 1) * 0.5f), cornerBorder.localPosition.z); 
+            cornerBorder.localScale = new Vector3(1, cliffsideSpriteInfo.GetScaleY() * layers, 1);
+            cornerBorder.localPosition = new Vector3(cornerBorder.localPosition.x, cliffsideSpriteInfo.GetInitY() 
+                - (cliffsideSpriteInfo.GetHeight() * (layers - 1) * 0.5f), cornerBorder.localPosition.z); 
         }
 
         // Helper methods that get adjacent tiles and check them 
@@ -155,7 +165,7 @@ public class Tile : MonoBehaviour{
     // Gets the ID of the current tile.
     public virtual TileID GetID(){ 
         foreach(TileID id in Enum.GetValues(typeof(TileID))){
-            if(id.GetPrefabName() == tileInfo.tileName) return id;
+            if(id.GetPrefabName() == tileInfo.GetTileName()) return id;
         }
         return TileID.NULL_VALUE;
     }

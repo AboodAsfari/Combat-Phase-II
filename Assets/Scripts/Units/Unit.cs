@@ -8,10 +8,19 @@ public class Unit : MonoBehaviour{
     protected UnitInfo unitInfo;
     protected UnitState unitState;
 
+    // Controls unit animations.
     protected Animator unitAnimator;
 
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
+
+    // Array of actions a unit can take.
+    [SerializeField]
+    private Action[] actions = new Action[GlobalVars.UNIT_ACTION_COUNT];
+
+    // Keeps track of how many uses an enhanced action has,
+    // and what action to revert to when it is complete.
+    private Tuple<Action, int> enhancedActionTracker;
 
     // Loads map state controller, as well as unit information.
     protected void Awake(){
@@ -19,8 +28,31 @@ public class Unit : MonoBehaviour{
         else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
 
         unitState = ScriptableObject.CreateInstance<UnitState>();
+        ResetUnitTokens();
 
         unitAnimator = GetComponent<Animator>();
+    }
+
+    // Executes an action.
+    public void ExecuteAction(int actionNumber){
+        if(actionNumber > GlobalVars.UNIT_ACTION_COUNT - 1 || actionNumber < 0) throw new ArgumentOutOfRangeException("There is no action associated with that number.");
+        if(actions[actionNumber] == null) throw new InvalidOperationException("Unit does not have a full action list.");
+        actions[actionNumber].ExecuteAction(GetComponent<Unit>(), msc);
+    }
+
+    // Resets the tokens a unit can currently use.
+    public void ResetUnitTokens(){
+        unitState.SetTraversalTokens(unitInfo.GetMaxTraversalTokens());
+        unitState.SetActionTokens(unitInfo.GetMaxActionTokens());
+    }
+
+    // Called when the unit owner is updated so that the correct 
+    // animation layer can be used.
+    public void UpdatedOwner(){
+        bool isRed = GetUnitState().GetOwner().GetPlayerCol() == PlayerColor.RED;
+        GetComponent<SpriteRenderer>().flipX = isRed;
+        if(isRed) unitAnimator.SetLayerWeight(1, 1f);
+        else unitAnimator.SetLayerWeight(1, 0f);
     }
 
     // Setters.
@@ -29,21 +61,23 @@ public class Unit : MonoBehaviour{
         else unitAnimator.Play("Idle", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
     }
 
-    public void UpdatedOwner(){
-        bool isRed = GetUnitState().GetOwner().GetPlayerCol() == PlayerColor.RED;
-        GetComponent<SpriteRenderer>().flipX = isRed;
-        if(isRed) unitAnimator.SetLayerWeight(1, 1f);
-        else unitAnimator.SetLayerWeight(1, 0f);
-    }
-
     // Getters.
     public UnitInfo GetUnitInfo(){ return unitInfo; }
     public UnitState GetUnitState(){ return unitState; }
+
+    // Gets the ID of the current unit.
+    public virtual UnitID GetID(){ 
+        foreach(UnitID id in Enum.GetValues(typeof(UnitID))){
+            if(id.GetPrefabName() == unitInfo.GetUnitName()) return id;
+        }
+        return UnitID.NULL_VALUE;
+    }
 }
 
 // All possible unit IDs.
 public enum UnitID{
-    TST_UNIT
+    TST_UNIT,
+    NULL_VALUE
 }
 
 // Used to find the correct prefab based on the tile ID.
@@ -63,4 +97,10 @@ public enum UnitTag{
     SUPPORT,
     BUILDER,
     OPERATOR
+}
+
+// Information about what tokens an action expects.
+public enum TokenType{
+    ACTION_TOKEN,
+    TRAVERSAL_TOKEN
 }

@@ -237,7 +237,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1421628135}
-  - component: {fileID: 1421628134}
+  - component: {fileID: 1421628136}
   m_Layer: 0
   m_Name: Editor Controller
   m_TagString: Untagged
@@ -245,21 +245,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1421628134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1421628133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d998afc32df40d14b8700c8422756c2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridSelect: {fileID: 2322196927727148644, guid: 54e47941cd283b149bff9a1b70fc9612, type: 3}
-  selectorGridSize: {x: 17, y: 13}
-  gsc: {fileID: 0}
 --- !u!4 &1421628135
 Transform:
   m_ObjectHideFlags: 0
@@ -275,3 +260,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1421628136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421628133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9601199f65e993d43a483405bd0e64d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileSelector: {fileID: 2322196927727148644, guid: 54e47941cd283b149bff9a1b70fc9612, type: 3}
+  selectorGridSize: {x: 17, y: 13}
+  msc: {fileID: 0}

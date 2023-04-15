@@ -2,25 +2,41 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(fileName = "UnitInfo", menuName = "Entity Info/Unit Info")]
 // Static information about a unit.
 public class UnitInfo : ScriptableObject{
     // The name of the unit.
-    public String unitName;
+    [SerializeField]
+    private String unitName;
 
     // The main type a unit falls under.
-    public UnitTag unitType;
+    [SerializeField]
+    private UnitTag unitType;
 
     // A list of tags that this unit has.
-    public List<UnitTag> unitTags;
+    [SerializeField]
+    private List<UnitTag> unitTags;
 
     // The maximum health a unit has by default.
-    public int maxHealth;
+    [SerializeField]
+    private int maxHealth;
 
     // The maximum number of action tokens a unit can have by default.
-    public int maxTraversalTokens;
-    public int maxActionTokens;
+    [SerializeField]
+    private int maxTraversalTokens;
+    [SerializeField]
+    private int maxActionTokens;
 
     // Whether or not the unit can be walked through.
-    public bool canWalkThrough;
+    [SerializeField]
+    private bool canWalkThrough;
+
+    // Getters.
+    public String GetUnitName(){ return unitName; }
+    public String GetUnitType(){ return unitType.ToString(); }
+    public List<UnitTag> GetUnitTags(){ return unitTags; }
+    public int GetMaxHealth(){ return maxHealth; }
+    public int GetMaxTraversalTokens(){ return maxTraversalTokens; }
+    public int GetMaxActionTokens(){ return maxActionTokens; }
+    public bool GetCanWalkThrough(){ return canWalkThrough; }
 }
