@@ -6,6 +6,6 @@ public class TestAction : Action{
     public override void ExecuteAction(Unit unit, GameController gc){
         SetCurrentAction(unit, gc);
         EnforceUnitList(unit, gc);
-        gc.EnterTileOverride(ActionUtils.GetNearbyUnits(unit.GetUnitState().GetPosition(), 4), ActionUtils.MoveUnit);
+        gc.EnterTileOverride(ActionUtils.GetNearbyUnits(unit.GetUnitState().GetPosition(), GetActionRange()), ActionUtils.MoveUnit);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Action : ScriptableObject{
     [SerializeField]
-    private String actionName;
+    protected String actionName;
 
     [SerializeField]
     [TextArea(2,10)]
@@ -24,6 +24,9 @@ public abstract class Action : ScriptableObject{
 
     [SerializeField]
     private List<UnitID> unitList;
+
+    [SerializeField]
+    private int actionRange;
 
     public virtual String CanExecuteAction(Unit unit, GameController gc){
         int tokensAvailable = unit.GetUnitState().GetActionTokens();
@@ -76,4 +79,5 @@ public abstract class Action : ScriptableObject{
     public int GetTokenCost(){ return tokenCost; }
     public bool GetIsWhitelist(){ return isWhitelist; }
     public List<UnitID> GetUnitList(){ return unitList; }
+    public int GetActionRange(){ return actionRange; }
 }
