@@ -55,8 +55,8 @@ public class EditorController : MonoBehaviour{
 
         for(int col = 0; col < selectorGridSize.x; col++){
             for(int row = 0; row < selectorGridSize.y; row++){  
-                float xPosOffset = (spriteInfo.GetWidth() * col) + (row % 2 == 0 ? SpriteInfo.TILE_HORIZONTAL_OFFSET : 0f);
-                float yPosOffset = -(spriteInfo.GetHeight() - SpriteInfo.TILE_VERTICAL_OFFSET) * row;
+                float xPosOffset = (spriteInfo.GetWidth() * col) + (row % 2 == 0 ? GlobalVars.TILE_HORIZONTAL_OFFSET : 0f);
+                float yPosOffset = -(spriteInfo.GetHeight() - GlobalVars.TILE_VERTICAL_OFFSET) * row;
                 Vector3 posOffset = new Vector3(xPosOffset, yPosOffset, 30);
 
                 GameObject selector = Instantiate(tileSelector, msc.GetTopLeft() + posOffset, Quaternion.identity, tileSelectorContainer.transform);
@@ -83,7 +83,7 @@ public class EditorController : MonoBehaviour{
             Vector2Int posChange = Vector2Int.RoundToInt(Vector2.Scale(mouseDiff, new Vector2(1/spriteInfo.GetWidth(), 1/spriteInfo.GetHeight())));
             mapOffset = initMapOffset + posChange;
             msc.SetMapPosition(mapOffset);
-            tileSelectorContainer.transform.position = new Vector3(Math.Abs(mapOffset.y % 2) == 1 ? SpriteInfo.TILE_HORIZONTAL_OFFSET : 0f, 0f, 0f);
+            tileSelectorContainer.transform.position = new Vector3(Math.Abs(mapOffset.y % 2) == 1 ? GlobalVars.TILE_HORIZONTAL_OFFSET : 0f, 0f, 0f);
         }else isDragging = false;
 
         // TODO: Remove these by adding user friendly functionality or putting them in a proper dev tool.

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Controls the main game where players will fight.
@@ -37,6 +39,11 @@ public class GameController : MonoBehaviour{
     private Tile selectedTile;
     [HideInInspector]
     private Unit selectedUnit;
+
+    // Tracks whether or not the game is in tile override.
+    private bool inTileOverride = false;
+    private HashSet<Vector2Int> overriddenTiles = new HashSet<Vector2Int>();
+    private Action<Vector2Int> overrideFunction;
     
     // Creates a new map state controller and loads the tile sprite info.
     private void Start(){
@@ -50,6 +57,7 @@ public class GameController : MonoBehaviour{
 
         spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
 
+        // TODO: TEMP TESTING STUFF REMOVE THIS
         msc.SetUnit(new Vector2Int(5, 5), msc.CreateUnit(new Vector2Int(5, 5), UnitID.TST_UNIT, playerOne).GetComponent<Unit>());
         msc.SetUnit(new Vector2Int(7, 5), msc.CreateUnit(new Vector2Int(7, 5), UnitID.TST_UNIT, playerTwo).GetComponent<Unit>());
     }
@@ -71,6 +79,38 @@ public class GameController : MonoBehaviour{
         selectedUnit = unit;
         Debug.Log("Selected a unit at: " + unit.GetUnitState().GetPosition());
     }
+
+    // Enters tile override mode and highlights the given tiles.
+    public void EnterTileOverride(HashSet<Tile> tiles, Action<Vector2Int> overrideFunction){
+        inTileOverride = true;
+        foreach(Tile t in tiles){
+            overriddenTiles.Add(t.GetTileState().GetPosition());
+            t.transform.Find("Tile Override").gameObject.SetActive(true);
+        }
+        this.overrideFunction = overrideFunction;
+    }
+    public void EnterTileOverride(HashSet<Vector2Int> tilePositions, Action<Vector2Int> overrideFunction){
+        inTileOverride = true;
+        foreach(Vector2Int pos in tilePositions){
+            overriddenTiles.Add(pos);
+            msc.GetTile(pos).transform.Find("Tile Override").gameObject.SetActive(true);
+        }
+        this.overrideFunction = overrideFunction;
+    }
+
+    // Exits tile override mode and removes override highlighting.
+    public void ExitTileOverride(){
+        inTileOverride = false;
+        foreach(Vector2Int pos in overriddenTiles){
+            msc.GetTile(pos).transform.Find("Tile Override").gameObject.SetActive(false);
+        }
+        overriddenTiles.Clear();
+        overrideFunction = null;
+    }
+
+    // Getters.
+    public bool IsInTileOverride(){ return inTileOverride; }
+    public Action<Vector2Int> GetOverrideFunction(){ return overrideFunction; }
 
     // Allows map movement, and toggling camera options.
     private void Update(){

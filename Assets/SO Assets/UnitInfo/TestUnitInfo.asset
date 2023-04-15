@@ -17,5 +17,5 @@ MonoBehaviour:
   unitTags: 0000000001000000
   maxHealth: 12
   maxTraversalTokens: 5
-  maxActionTokens: 2
+  maxActionTokens: 5
   canWalkThrough: 0

@@ -15,9 +15,4 @@ public class SpriteInfo : ScriptableObject{
     public float GetInitY(){ return initY; }
     public float GetScaleX(){ return scaleX; }
     public float GetScaleY(){ return scaleY; }
-
-    // Tile offset information.
-    public const float TILE_HORIZONTAL_OFFSET = 30f/32f;
-    public const float TILE_VERTICAL_OFFSET = 15f/32f;
-    public const float TILE_ELEVATION_OFFSET = 10f/32f;
 }
