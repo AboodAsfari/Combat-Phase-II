@@ -14,8 +14,13 @@ public class Unit : MonoBehaviour{
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
 
-    // TODO: TEST FIELD, REMOVE IT!!!!
-    public Action action;
+    // Array of actions a unit can take.
+    [SerializeField]
+    private Action[] actions = new Action[GlobalVars.UNIT_ACTION_COUNT];
+
+    // Keeps track of how many uses an enhanced action has,
+    // and what action to revert to when it is complete.
+    private Tuple<Action, int> enhancedActionTracker;
 
     // Loads map state controller, as well as unit information.
     protected void Awake(){
@@ -28,23 +33,32 @@ public class Unit : MonoBehaviour{
         unitAnimator = GetComponent<Animator>();
     }
 
+    // Executes an action.
+    public void ExecuteAction(int actionNumber){
+        if(actionNumber > GlobalVars.UNIT_ACTION_COUNT - 1 || actionNumber < 0) throw new ArgumentOutOfRangeException("There is no action associated with that number.");
+        if(actions[actionNumber] == null) throw new InvalidOperationException("Unit does not have a full action list.");
+        actions[actionNumber].ExecuteAction(GetComponent<Unit>(), msc);
+    }
+
     // Resets the tokens a unit can currently use.
     public void ResetUnitTokens(){
         unitState.SetTraversalTokens(unitInfo.GetMaxTraversalTokens());
         unitState.SetActionTokens(unitInfo.GetMaxActionTokens());
     }
 
-    // Setters.
-    public void SetHover(bool isHover){ 
-        if(isHover) unitAnimator.Play("Hover", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        else unitAnimator.Play("Idle", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-    }
-
+    // Called when the unit owner is updated so that the correct 
+    // animation layer can be used.
     public void UpdatedOwner(){
         bool isRed = GetUnitState().GetOwner().GetPlayerCol() == PlayerColor.RED;
         GetComponent<SpriteRenderer>().flipX = isRed;
         if(isRed) unitAnimator.SetLayerWeight(1, 1f);
         else unitAnimator.SetLayerWeight(1, 0f);
+    }
+
+    // Setters.
+    public void SetHover(bool isHover){ 
+        if(isHover) unitAnimator.Play("Hover", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        else unitAnimator.Play("Idle", 0, unitAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
     }
 
     // Getters.

@@ -29,8 +29,8 @@ public abstract class Action : ScriptableObject{
         int tokensAvailable = unit.GetUnitState().GetActionTokens();
         if(tokenType == TokenType.TRAVERSAL_TOKEN) tokensAvailable += unit.GetUnitState().GetTraversalTokens();
         if(tokensAvailable < tokenCost) return "Not enough tokens";
-        return "";
-    }   
+        return "";  
+    }
 
     public virtual void ConsumeTokens(Unit unit, MapStateController msc){
         if(!CanExecuteAction(unit, msc).Equals("")) throw new InvalidOperationException("Unit does not have enough tokens.");

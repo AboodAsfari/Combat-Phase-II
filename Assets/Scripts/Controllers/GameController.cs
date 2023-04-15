@@ -104,13 +104,18 @@ public class GameController : MonoBehaviour{
         }
 
         // TODO: Remove these by adding user friendly functionality or putting them in a proper dev tool.
-        // Toggles camera snap and camera drift.
+        // Toggles camera snap and camera drift, and executes actions.
         if(Input.GetKeyDown("c")){
             Debug.Log("Turning camera snap " + (camSnapOn ? "on" : "off"));
             camSnapOn = !camSnapOn;
         }else if(Input.GetKeyDown("d")){
             Debug.Log("Turning camera drift " + (camDriftOn ? "on" : "off"));
             camDriftOn = !camDriftOn;
+        }else if(selectedUnit != null){
+            if(Input.GetKeyDown("1")) selectedUnit.ExecuteAction(0);
+            if(Input.GetKeyDown("2")) selectedUnit.ExecuteAction(1);
+            if(Input.GetKeyDown("3")) selectedUnit.ExecuteAction(2);
+            if(Input.GetKeyDown("4")) selectedUnit.ExecuteAction(3);
         }
     }
 }
