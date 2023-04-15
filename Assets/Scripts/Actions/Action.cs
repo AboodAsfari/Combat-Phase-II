@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Action : ScriptableObject{
+    [Header("Basic Action Info")]
+
     [SerializeField]
     protected String actionName;
 
     [SerializeField]
-    [TextArea(2,10)]
+    [TextArea(3,10)]
     private String actionDescription;
+    [Space(10)]
 
     [SerializeField]
     private Action enhancesInto;
@@ -18,12 +21,18 @@ public abstract class Action : ScriptableObject{
 
     [SerializeField]
     private int tokenCost;
+    [Space(20)]
+
+    [Header("Unit Permission List")]
 
     [SerializeField]
     private bool isWhitelist;
 
     [SerializeField]
     private List<UnitID> unitList;
+    [Space(20)]
+
+    [Header("Optional Action Properties")]
 
     [SerializeField]
     private int actionRange;
