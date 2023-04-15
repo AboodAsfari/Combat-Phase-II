@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TestAction", menuName = "Actions/TestAction")]
 public class TestAction : Action{
-    public override void ExecuteAction(Unit unit, MapStateController msc){
-        EnforceUnitList(unit, msc);
-        ConsumeTokens(unit, msc);
-        Debug.Log("Action Tokens Left: " + unit.GetUnitState().GetActionTokens());
+    public override void ExecuteAction(Unit unit, GameController gc){
+        SetCurrentAction(unit, gc);
+        EnforceUnitList(unit, gc);
+        gc.EnterTileOverride(ActionUtils.GetTraversableTiles(unit.GetUnitState().GetPosition(), 4), ActionUtils.MoveUnit);
     }
 }

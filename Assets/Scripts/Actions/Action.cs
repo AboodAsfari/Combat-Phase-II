@@ -25,15 +25,15 @@ public abstract class Action : ScriptableObject{
     [SerializeField]
     private List<UnitID> unitList;
 
-    public virtual String CanExecuteAction(Unit unit, MapStateController msc){
+    public virtual String CanExecuteAction(Unit unit, GameController gc){
         int tokensAvailable = unit.GetUnitState().GetActionTokens();
         if(tokenType == TokenType.TRAVERSAL_TOKEN) tokensAvailable += unit.GetUnitState().GetTraversalTokens();
         if(tokensAvailable < tokenCost) return "Not enough tokens";
         return "";  
     }
 
-    public virtual void ConsumeTokens(Unit unit, MapStateController msc){
-        if(!CanExecuteAction(unit, msc).Equals("")) throw new InvalidOperationException("Unit does not have enough tokens.");
+    public virtual void ConsumeTokens(Unit unit, GameController gc){
+        if(!CanExecuteAction(unit, gc).Equals("")) throw new InvalidOperationException("Unit does not have enough tokens.");
         if(tokenType != TokenType.TRAVERSAL_TOKEN) unit.GetUnitState().ConsumeActionTokens(tokenCost);
         else if(tokenCost <= unit.GetUnitState().GetTraversalTokens()) unit.GetUnitState().ConsumeTraversalTokens(tokenCost);
         else{
@@ -43,7 +43,7 @@ public abstract class Action : ScriptableObject{
         }
     }
 
-    public virtual void EnforceUnitList(Unit unit, MapStateController msc){
+    public virtual void EnforceUnitList(Unit unit, GameController gc){
         if(isWhitelist){
             bool found = false;
             foreach(UnitID id in unitList){
@@ -60,11 +60,17 @@ public abstract class Action : ScriptableObject{
         }
     }
 
+    public void SetCurrentAction(Unit unit, GameController gc){
+        ActionUtils.currentAction = this;
+        ActionUtils.currentController = gc;
+        ActionUtils.currentUnit = unit;
+    }
+
     // Executes the action.
-    public abstract void ExecuteAction(Unit unit, MapStateController msc);
+    public abstract void ExecuteAction(Unit unit, GameController gc);
 
     // Getters.
-    public virtual String GetActionDescription(Unit unit, MapStateController msc){ return actionDescription; }
+    public virtual String GetActionDescription(Unit unit, GameController gc){ return actionDescription; }
     public String GetActionName(){ return actionName; }
     public TokenType GetTokenType(){ return tokenType; }
     public int GetTokenCost(){ return tokenCost; }

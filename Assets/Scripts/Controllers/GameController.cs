@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour{
 
     // Tracks whether or not the game is in tile override.
     private bool inTileOverride = false;
-    private List<Vector2Int> overriddenTiles = new List<Vector2Int>();
+    private HashSet<Vector2Int> overriddenTiles = new HashSet<Vector2Int>();
     private Action<Vector2Int> overrideFunction;
     
     // Creates a new map state controller and loads the tile sprite info.
@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour{
     }
 
     // Enters tile override mode and highlights the given tiles.
-    public void EnterTileOverride(List<Tile> tiles, Action<Vector2Int> overrideFunction){
+    public void EnterTileOverride(HashSet<Tile> tiles, Action<Vector2Int> overrideFunction){
         inTileOverride = true;
         foreach(Tile t in tiles){
             overriddenTiles.Add(t.GetTileState().GetPosition());
@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour{
         }
         this.overrideFunction = overrideFunction;
     }
-    public void EnterTileOverride(List<Vector2Int> tilePositions, Action<Vector2Int> overrideFunction){
+    public void EnterTileOverride(HashSet<Vector2Int> tilePositions, Action<Vector2Int> overrideFunction){
         inTileOverride = true;
         foreach(Vector2Int pos in tilePositions){
             overriddenTiles.Add(pos);

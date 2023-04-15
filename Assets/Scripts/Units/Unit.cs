@@ -14,6 +14,11 @@ public class Unit : MonoBehaviour{
     // The object that controls the current map, whether it's an editor or game.
     private MapStateController msc;
 
+    // References to either the editor controller or the game controller,
+    // one of these will always be null.
+    private EditorController editorController;
+    private GameController gameController;
+
     // Array of actions a unit can take.
     [SerializeField]
     private Action[] actions = new Action[GlobalVars.UNIT_ACTION_COUNT];
@@ -24,8 +29,13 @@ public class Unit : MonoBehaviour{
 
     // Loads map state controller, as well as unit information.
     protected void Awake(){
-        if(GameObject.Find("Editor Controller") != null) msc = GameObject.Find("Editor Controller").GetComponent<EditorController>().msc;
-        else msc = GameObject.Find("Game Controller").GetComponent<GameController>().msc;
+        if(GameObject.Find("Editor Controller") != null){
+            editorController = GameObject.Find("Editor Controller").GetComponent<EditorController>(); 
+            msc = editorController.msc;
+        }else{
+            gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
+            msc = gameController.msc;
+        }
 
         unitState = ScriptableObject.CreateInstance<UnitState>();
         ResetUnitTokens();
@@ -37,7 +47,7 @@ public class Unit : MonoBehaviour{
     public void ExecuteAction(int actionNumber){
         if(actionNumber > GlobalVars.UNIT_ACTION_COUNT - 1 || actionNumber < 0) throw new ArgumentOutOfRangeException("There is no action associated with that number.");
         if(actions[actionNumber] == null) throw new InvalidOperationException("Unit does not have a full action list.");
-        actions[actionNumber].ExecuteAction(GetComponent<Unit>(), msc);
+        actions[actionNumber].ExecuteAction(GetComponent<Unit>(), gameController);
     }
 
     // Resets the tokens a unit can currently use.

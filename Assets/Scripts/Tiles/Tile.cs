@@ -73,8 +73,14 @@ public class Tile : MonoBehaviour{
             if(transform.Find("Tile Override").gameObject.activeSelf){
                 Action<Vector2Int> action = gameController.GetOverrideFunction();
                 gameController.ExitTileOverride();
+                gameController.ResetSelect();
                 action(GetTileState().GetPosition());
-            }else gameController.ExitTileOverride();
+            }else{
+                gameController.ResetSelect();
+                gameController.ExitTileOverride();
+                if(msc.GetUnit(tileState.GetPosition()) != null) gameController.SelectEntity(msc.GetUnit(tileState.GetPosition()));
+                else gameController.SelectEntity(GetComponent<Tile>());
+            }
         }else{
             if(msc.GetUnit(tileState.GetPosition()) != null) gameController.SelectEntity(msc.GetUnit(tileState.GetPosition()));
             else gameController.SelectEntity(GetComponent<Tile>());
@@ -206,7 +212,8 @@ public enum Direction{
     RIGHT,
     LEFT,
     BOTTOM_RIGHT,
-    BOTTOM_LEFT
+    BOTTOM_LEFT,
+    NULL_VALUE
 }
 
 // Converts a direction enum value to a direction vector.
@@ -221,5 +228,17 @@ public static class DirectionExtensions{
             case Direction.BOTTOM_LEFT : return new Vector2Int(-1, 1);
         }
         return Vector2Int.zero;
+    }
+
+    public static Direction GetOpposite(this Direction type){
+        switch(type){
+            case Direction.TOP_RIGHT : return Direction.BOTTOM_LEFT;
+            case Direction.TOP_LEFT : return Direction.BOTTOM_RIGHT;
+            case Direction.RIGHT : return Direction.LEFT;
+            case Direction.LEFT : return Direction.RIGHT;
+            case Direction.BOTTOM_RIGHT : return Direction.TOP_LEFT;
+            case Direction.BOTTOM_LEFT : return Direction.TOP_RIGHT;
+        }
+        return Direction.NULL_VALUE;
     }
 }
