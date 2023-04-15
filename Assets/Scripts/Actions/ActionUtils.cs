@@ -9,6 +9,8 @@ public class ActionUtils{
     public static Action currentAction;
     public static Unit currentUnit;
 
+    public static Dictionary<Vector2Int, List<Vector2Int>> tilePaths = new Dictionary<Vector2Int, List<Vector2Int>>();
+
     public static void MoveUnit(Vector2Int pos){
         currentAction.ConsumeTokens(currentUnit, currentController);
         Debug.Log("TEMP");
@@ -21,6 +23,8 @@ public class ActionUtils{
 
         queue.Enqueue(new Tuple<Vector2Int, int, int>(initPos, 0, 0));
         visitedTiles.Add(initPos);
+        tilePaths.Clear();
+        tilePaths.Add(initPos, new List<Vector2Int>());
 
         while(queue.Count > 0){
             Vector2Int pos = queue.Peek().Item1;
@@ -30,7 +34,7 @@ public class ActionUtils{
             int effectiveRangeModifier = 0;
             if(pathfindType == PathfindType.RANGED) effectiveRangeModifier = currentController.msc.GetTile(pos).GetTileState().GetElevation() - 
                 currentController.msc.GetTile(initPos).GetTileState().GetElevation();
-                
+
             if(!pos.Equals(initPos) && addFilter(pos) && currRange + effectiveRangeModifier - currExtend <= range) traversableTiles.Add(pos);
             if(currRange + effectiveRangeModifier - currExtend >= range) continue;
 
@@ -53,6 +57,9 @@ public class ActionUtils{
                             currentController.msc.GetTile(nextPos).GetTileState().GetElevation()) + 1;
                     }
                     queue.Enqueue(new Tuple<Vector2Int, int, int>(nextPos, currRange + rangeCost, currExtend));
+                    List<Vector2Int> nextPath = new List<Vector2Int>(tilePaths[pos]);
+                    nextPath.Add(pos);
+                    tilePaths.Add(nextPos, nextPath);
                 }
             }
         }
