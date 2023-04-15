@@ -60,8 +60,8 @@ public class MapStateController : MonoBehaviour{
         tileScript.GetTileState().SetPosition(pos);
         tileScript.GetTileState().SetElevation(elevation);
         tile.name = tileScript.GetTileInfo().GetTileName() + " at: (" + tileScript.GetTileState().GetPosition().x + ", " + tileScript.GetTileState().GetPosition().y + ")";
-        tile.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, 0, -31) 
-            + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * elevation, 0);
+        tile.transform.localPosition = GetScreenPos(pos) + new Vector3(GlobalVars.TILE_HORIZONTAL_OFFSET, 0, -31) 
+            + new Vector3(0, GlobalVars.TILE_ELEVATION_OFFSET * elevation, 0);
 
         // Sets the sorting order of the tile and its children.
         tile.GetComponent<SpriteRenderer>().sortingOrder = elevation;
@@ -105,8 +105,8 @@ public class MapStateController : MonoBehaviour{
         unitScript.GetUnitState().SetOwner(owner);
         unitScript.UpdatedOwner();
         unit.name = unitScript.GetUnitInfo().GetUnitName() + " at: (" + unitScript.GetUnitState().GetPosition().x + ", " + unitScript.GetUnitState().GetPosition().y + ")";
-        unit.transform.localPosition = GetScreenPos(pos) + new Vector3(SpriteInfo.TILE_HORIZONTAL_OFFSET, unitInfo.GetInitY(), -31) 
-            + new Vector3(0, SpriteInfo.TILE_ELEVATION_OFFSET * GetTile(pos).GetTileState().GetElevation(), 0);
+        unit.transform.localPosition = GetScreenPos(pos) + new Vector3(GlobalVars.TILE_HORIZONTAL_OFFSET, unitInfo.GetInitY(), -31) 
+            + new Vector3(0, GlobalVars.TILE_ELEVATION_OFFSET * GetTile(pos).GetTileState().GetElevation(), 0);
         return unit;
     }
 
@@ -160,7 +160,7 @@ public class MapStateController : MonoBehaviour{
 
     // Setters.
     public void SetMapPosition(Vector2 point){
-        Vector2 pos = Vector2.Scale(point , new Vector2(spriteInfo.GetWidth(), spriteInfo.GetHeight() - SpriteInfo.TILE_VERTICAL_OFFSET));
+        Vector2 pos = Vector2.Scale(point , new Vector2(spriteInfo.GetWidth(), spriteInfo.GetHeight() - GlobalVars.TILE_VERTICAL_OFFSET));
         mapContainer.transform.position = pos;
     }
 
@@ -192,8 +192,8 @@ public class MapStateController : MonoBehaviour{
 
     private Vector3 GetScreenPos(Vector2Int pos){
         SpriteInfo spriteInfo = Resources.Load("SpriteInfo/TileSpriteInfo") as SpriteInfo;
-        float xPosOffset = (spriteInfo.GetWidth() * pos.x) + (pos.y * SpriteInfo.TILE_HORIZONTAL_OFFSET);
-        float yPosOffset = -(spriteInfo.GetHeight() - SpriteInfo.TILE_VERTICAL_OFFSET) * pos.y;
+        float xPosOffset = (spriteInfo.GetWidth() * pos.x) + (pos.y * GlobalVars.TILE_HORIZONTAL_OFFSET);
+        float yPosOffset = -(spriteInfo.GetHeight() - GlobalVars.TILE_VERTICAL_OFFSET) * pos.y;
         return new Vector3(xPosOffset, yPosOffset, 30);
     }
 
