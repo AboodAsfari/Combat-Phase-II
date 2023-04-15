@@ -19,3 +19,5 @@ MonoBehaviour:
   tokenCost: 3
   isWhitelist: 1
   unitList: 00000000
+  actionRange: 3
+  pathfindingType: 2

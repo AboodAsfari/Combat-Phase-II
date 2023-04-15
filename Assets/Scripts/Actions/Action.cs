@@ -37,6 +37,9 @@ public abstract class Action : ScriptableObject{
     [SerializeField]
     private int actionRange;
 
+    [SerializeField]
+    private PathfindType pathfindingType;
+
     public virtual String CanExecuteAction(Unit unit, GameController gc){
         int tokensAvailable = unit.GetUnitState().GetActionTokens();
         if(tokenType == TokenType.TRAVERSAL_TOKEN) tokensAvailable += unit.GetUnitState().GetTraversalTokens();
@@ -89,4 +92,11 @@ public abstract class Action : ScriptableObject{
     public bool GetIsWhitelist(){ return isWhitelist; }
     public List<UnitID> GetUnitList(){ return unitList; }
     public int GetActionRange(){ return actionRange; }
+    public PathfindType GetPathfindType(){ return pathfindingType; }
+}
+
+public enum PathfindType{
+    TRAVERSAL,
+    MELEE,
+    RANGED
 }
